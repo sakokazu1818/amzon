@@ -5,12 +5,14 @@
   %thead
     %tr
       %th= model_class.human_attribute_name(:id)
+      %th= model_class.human_attribute_name(:name)
       %th= model_class.human_attribute_name(:created_at)
       %th=t '.actions', :default => t("helpers.actions")
   %tbody
     - @cellar_files.each do |cellar_file|
       %tr
         %td= link_to cellar_file.id, cellar_file_path(cellar_file)
+        %td= cellar_file.name
         %td=l cellar_file.created_at
         %td
           = link_to t('.show', :default => t("helpers.links.show")), cellar_file_path(cellar_file), :class => 'btn btn-default btn-xs'

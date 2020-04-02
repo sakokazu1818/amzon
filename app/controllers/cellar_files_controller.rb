@@ -7,18 +7,10 @@ class CellarFilesController < ApplicationController
     @cellar_files = CellarFile.all
   end
 
-  # GET /cellar_files/1
-  # GET /cellar_files/1.json
-  def show
-  end
-
   # GET /cellar_files/new
   def new
     @cellar_file = CellarFile.new
-  end
-
-  # GET /cellar_files/1/edit
-  def edit
+    @cellar_file.name = Time.current.strftime('%Y-%m-%d-%H-%M-%S.xlsx')
   end
 
   # POST /cellar_files
@@ -32,21 +24,6 @@ class CellarFilesController < ApplicationController
         format.json { render :show, status: :created, location: @cellar_file }
       else
         format.html { render :new }
-        format.json { render json: @cellar_file.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # PATCH/PUT /cellar_files/1
-  # PATCH/PUT /cellar_files/1.json
-  def update
-    respond_to do |format|
-      @cellar_file.excel.attach(params[:cellar_file][:excel])
-      if @cellar_file.update(cellar_file_params)
-        format.html { redirect_to @cellar_file, notice: 'Cellar file was successfully updated.' }
-        format.json { render :show, status: :ok, location: @cellar_file }
-      else
-        format.html { render :edit }
         format.json { render json: @cellar_file.errors, status: :unprocessable_entity }
       end
     end
@@ -70,6 +47,6 @@ class CellarFilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def cellar_file_params
-      params.fetch(:cellar_file, {}).permit(:excel)
+      params.fetch(:cellar_file, {}).permit(:excel, :name)
     end
 end

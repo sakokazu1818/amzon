@@ -37,7 +37,7 @@ gem 'haml-rails'
 gem 'erb2haml'
 
 # less(CSS)対応（後述LESSを使う場合）
-gem 'less-rails'
+gem 'less-rails', git: 'https://github.com/MustafaZain/less-rails'
 # JavaScript のエンジンである v8 を Ruby から使えるようにする
 gem 'therubyracer'
 # JavaScriptコードを実行するためのエンジン
@@ -45,6 +45,12 @@ gem 'execjs'
 
 # Twitter社が提供しているCSSとJavaScriptのフレームワーク
 gem 'twitter-bootstrap-rails'
+
+gem 'jquery-rails'
+
+gem 'pry-rails'
+gem 'pry-byebug'
+gem 'pry-doc'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
