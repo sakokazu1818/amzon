@@ -47,8 +47,13 @@ class CellarFilesController < ApplicationController
   end
 
   def search
-    Scraping.run(@cellar_file)
-    binding.pry
+    scraping = Scraping.new(@cellar_file)
+    FileUtils.touch(Rails.root + 'tmp/hogemge')
+
+    bigin
+      scraping.run
+    rescue
+    end
   end
 
   private
