@@ -1,0 +1,364 @@
+current directory: /Users/sako/amazon/vendor/bundle/ruby/2.6.0/gems/zipruby-0.3.6/ext
+/Users/sako/.rbenv/versions/2.6.5/bin/ruby -I /Users/sako/.rbenv/versions/2.6.5/lib/ruby/2.6.0 -r ./siteconf20200402-74558-4j9zyr.rb extconf.rb
+checking for zlib.h... yes
+checking for -lz... yes
+checking for fseeko()... yes
+checking for ftello()... yes
+checking for mkstemp()... yes
+creating Makefile
+
+current directory: /Users/sako/amazon/vendor/bundle/ruby/2.6.0/gems/zipruby-0.3.6/ext
+make "DESTDIR=" clean
+
+current directory: /Users/sako/amazon/vendor/bundle/ruby/2.6.0/gems/zipruby-0.3.6/ext
+make "DESTDIR="
+compiling mkstemp.c
+mkstemp.c:69:8: warning: implicit declaration of function 'getpid' is invalid in C99 [-Wimplicit-function-declaration]
+        pid = getpid();
+              ^
+1 warning generated.
+compiling tmpfile.c
+tmpfile.c:88:9: warning: initializing 'char *' with an expression of type 'const char [10]' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+  char *dirnam = P_tmpdir;
+        ^        ~~~~~~~~
+1 warning generated.
+compiling zip_add.c
+compiling zip_add_dir.c
+zip_add_dir.c:59:11: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+    len = strlen(name);
+        ~ ^~~~~~~~~~~~
+1 warning generated.
+compiling zip_close.c
+zip_close.c:146:29: warning: assigning to 'char *' from 'const char [2]' discards qualifiers [-Wincompatible-pointer-types-discards-qualifiers]
+                    cd->entry[j].filename = "-";
+                                          ^ ~~~
+zip_close.c:188:24: warning: implicit conversion loses integer precision: 'off_t' (aka 'long long') to 'unsigned int' [-Wshorten-64-to-32]
+        cd->entry[j].offset = ftello(out);
+                            ~ ^~~~~~~~~~~
+zip_close.c:322:26: warning: implicit conversion loses integer precision: 'off_t' (aka 'long long') to 'unsigned int' [-Wshorten-64-to-32]
+    de->uncomp_size = st.size;
+                    ~ ~~~^~~~
+zip_close.c:323:24: warning: implicit conversion loses integer precision: 'off_t' (aka 'long long') to 'unsigned int' [-Wshorten-64-to-32]
+    de->comp_size = st.comp_size;
+                  ~ ~~~^~~~~~~~~
+zip_close.c:380:15: warning: implicit conversion loses integer precision: 'uLong' (aka 'unsigned long') to 'unsigned int' [-Wshorten-64-to-32]
+    st->crc = crc32(0, NULL, 0);
+            ~ ^~~~~~~~~~~~~~~~~
+zip_close.c:408:19: warning: implicit conversion loses integer precision: 'ssize_t' (aka 'long') to 'uInt' (aka 'unsigned int') [-Wshorten-64-to-32]
+                zstr.avail_in = n;
+                              ~ ^
+zip_close.c:411:13: warning: implicit conversion loses integer precision: 'uLong' (aka 'unsigned long') to 'unsigned int' [-Wshorten-64-to-32]
+                st->crc = crc32(st->crc, (Bytef *)b1, n);
+                        ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+zip_close.c:411:41: warning: implicit conversion loses integer precision: 'ssize_t' (aka 'long') to 'uInt' (aka 'unsigned int') [-Wshorten-64-to-32]
+                st->crc = crc32(st->crc, (Bytef *)b1, n);
+                          ~~~~~                       ^
+zip_close.c:475:11: warning: comparison of integers of different signs: 'off_t' (aka 'long long') and 'unsigned long' [-Wsign-compare]
+        nn = len > sizeof(buf) ? sizeof(buf) : len;
+             ~~~ ^ ~~~~~~~~~~~
+zip_close.c:475:41: warning: implicit conversion loses integer precision: 'off_t' (aka 'long long') to 'int' [-Wshorten-64-to-32]
+        nn = len > sizeof(buf) ? sizeof(buf) : len;
+           ~                                   ^~~
+zip_close.c:476:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+        if ((n=fread(buf, 1, nn, fs)) < 0) {
+              ~^~~~~~~~~~~~~~~~~~~~~
+11 warnings generated.
+compiling zip_crypt.c
+zip_crypt.c:25:8: warning: type specifier missing, defaults to 'int' [-Wimplicit-int]
+static zipenc_crc32(uLong crc, char c) {
+~~~~~~ ^
+zip_crypt.c:26:35: warning: passing 'char *' to parameter of type 'const Bytef *' (aka 'const unsigned char *') converts between pointers to integer types with different sign [-Wpointer-sign]
+  return crc32(crc ^ 0xffffffffL, &c, 1) ^ 0xffffffffL;
+                                  ^~
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/zlib.h:1746:59: note: passing argument to parameter 'buf' here
+ZEXTERN uLong ZEXPORT crc32   OF((uLong crc, const Bytef *buf, uInt len));
+                                                          ^
+zip_crypt.c:26:42: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+  return crc32(crc ^ 0xffffffffL, &c, 1) ^ 0xffffffffL;
+  ~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+zip_crypt.c:51:17: warning: comparison of integers of different signs: 'int' and 'size_t' (aka 'unsigned long') [-Wsign-compare]
+  for (i = 0; i < len; i++) {
+              ~ ^ ~~~
+zip_crypt.c:78:17: warning: comparison of integers of different signs: 'int' and 'size_t' (aka 'unsigned long') [-Wsign-compare]
+  for (i = 0; i < n; i++) {
+              ~ ^ ~
+zip_crypt.c:109:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+    if ((n = fread(buf, 1, MIN(len,  sizeof(buf)), src)) < 0) {
+           ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+zip_crypt.c:109:28: warning: comparison of integers of different signs: 'off_t' (aka 'long long') and 'unsigned long' [-Wsign-compare]
+    if ((n = fread(buf, 1, MIN(len,  sizeof(buf)), src)) < 0) {
+                           ^   ~~~   ~~~~~~~~~~~
+zip_crypt.c:23:24: note: expanded from macro 'MIN'
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+                    ~  ^  ~
+zip_crypt.c:172:17: warning: comparison of integers of different signs: 'int' and 'size_t' (aka 'unsigned long') [-Wsign-compare]
+  for (i = 0; i < n; i++) {
+              ~ ^ ~
+zip_crypt.c:200:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+    if ((n = fread(buf, 1, MIN(len,  sizeof(buf)), src)) < 0) {
+           ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+zip_crypt.c:200:28: warning: comparison of integers of different signs: 'off_t' (aka 'long long') and 'unsigned long' [-Wsign-compare]
+    if ((n = fread(buf, 1, MIN(len,  sizeof(buf)), src)) < 0) {
+                           ^   ~~~   ~~~~~~~~~~~
+zip_crypt.c:23:24: note: expanded from macro 'MIN'
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+                    ~  ^  ~
+zip_crypt.c:370:10: warning: implicit declaration of function 'umask' is invalid in C99 [-Wimplicit-function-declaration]
+  mask = umask(0);
+         ^
+zip_crypt.c:372:3: warning: implicit declaration of function 'chmod' is invalid in C99 [-Wimplicit-function-declaration]
+  chmod(za->zn, 0666&~mask);
+  ^
+zip_crypt.c:293:27: warning: implicit conversion loses integer precision: 'off_t' (aka 'long long') to 'unsigned int' [-Wshorten-64-to-32]
+    cd->entry[i].offset = ftello(out);
+                        ~ ^~~~~~~~~~~
+13 warnings generated.
+compiling zip_delete.c
+compiling zip_dirent.c
+zip_dirent.c:109:18: warning: implicit conversion loses integer precision: 'off_t' (aka 'long long') to 'unsigned int' [-Wshorten-64-to-32]
+    cd->offset = ftello(fp);
+               ~ ^~~~~~~~~~
+zip_dirent.c:116:27: warning: implicit conversion loses integer precision: 'long long' to 'unsigned int' [-Wshorten-64-to-32]
+    cd->size = ftello(fp) - cd->offset;
+             ~ ~~~~~~~~~~~^~~~~~~~~~~~
+2 warnings generated.
+compiling zip_entry_free.c
+compiling zip_entry_new.c
+compiling zip_err_str.c
+compiling zip_error.c
+compiling zip_error_clear.c
+compiling zip_error_get.c
+compiling zip_error_get_sys_type.c
+compiling zip_error_strerror.c
+compiling zip_error_to_str.c
+compiling zip_fclose.c
+compiling zip_file_error_clear.c
+compiling zip_file_error_get.c
+compiling zip_file_get_offset.c
+compiling zip_file_strerror.c
+compiling zip_fopen.c
+compiling zip_fopen_index.c
+zip_fopen_index.c:160:6: warning: implicit conversion loses integer precision: 'size_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+        i = buflen;
+          ~ ^~~~~~
+zip_fopen_index.c:162:10: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+        i = zf->cbytes_left;
+          ~ ~~~~^~~~~~~~~~~
+zip_fopen_index.c:164:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+    j = fread(buf, 1, i, zf->za->zp);
+      ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+3 warnings generated.
+compiling zip_fread.c
+zip_fread.c:81:27: warning: implicit conversion loses integer precision: 'size_t' (aka 'unsigned long') to 'uInt' (aka 'unsigned int') [-Wshorten-64-to-32]
+    zf->zstr->avail_out = toread;
+                        ~ ^~~~~~
+zip_fread.c:97:49: warning: implicit conversion loses integer precision: 'size_t' (aka 'unsigned long') to 'uInt' (aka 'unsigned int') [-Wshorten-64-to-32]
+                    zf->crc = crc32(zf->crc, (Bytef *)outbuf, len);
+                              ~~~~~                           ^~~
+2 warnings generated.
+compiling zip_free.c
+compiling zip_get_archive_comment.c
+compiling zip_get_file_comment.c
+compiling zip_get_name.c
+compiling zip_get_num_files.c
+compiling zip_memdup.c
+compiling zip_name_locate.c
+compiling zip_new.c
+compiling zip_open.c
+zip_open.c:156:34: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    comlen = buf + buflen - eocd - EOCDLEN;
+           ~ ~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+zip_open.c:232:51: warning: implicit conversion loses integer precision: 'long' to 'unsigned int' [-Wshorten-64-to-32]
+        if ((_zip_dirent_read(cd->entry+i, fp, bufp, eocd-cdp, 0,
+             ~~~~~~~~~~~~~~~~                        ~~~~^~~~
+zip_open.c:450:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+    buflen = fread(buf, 1, CDBUFSIZE, fp);
+           ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+zip_open.c:463:56: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    while ((match=_zip_memmem(match, buflen-(match-buf)-18,
+                  ~~~~~~~~~~~        ~~~~~~~~~~~~~~~~~~^~~
+4 warnings generated.
+compiling zip_rename.c
+compiling zip_replace.c
+compiling zip_set_archive_comment.c
+compiling zip_set_file_comment.c
+compiling zip_set_name.c
+compiling zip_source_buffer.c
+compiling zip_source_file.c
+compiling zip_source_filep.c
+zip_source_filep.c:115:14: warning: comparison of integers of different signs: 'size_t' (aka 'unsigned long') and 'off_t' (aka 'long long') [-Wsign-compare]
+            n = len > z->remain ? z->remain : len;
+                ~~~ ^ ~~~~~~~~~
+zip_source_filep.c:115:31: warning: implicit conversion loses integer precision: 'off_t' (aka 'long long') to 'int' [-Wshorten-64-to-32]
+            n = len > z->remain ? z->remain : len;
+              ~                   ~~~^~~~~~
+zip_source_filep.c:115:40: warning: implicit conversion loses integer precision: 'size_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+            n = len > z->remain ? z->remain : len;
+              ~                               ^~~
+zip_source_filep.c:117:10: warning: implicit conversion loses integer precision: 'size_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+            n = len;
+              ~ ^~~
+zip_source_filep.c:119:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+        if ((i=fread(buf, 1, n, z->f)) < 0) {
+              ~^~~~~~~~~~~~~~~~~~~~~~
+5 warnings generated.
+compiling zip_source_free.c
+compiling zip_source_function.c
+compiling zip_source_zip.c
+zip_source_zip.c:132:20: warning: comparison of integers of different signs: 'long long' and 'unsigned long' [-Wsign-compare]
+            i = (z->off-n > sizeof(b) ? sizeof(b) : z->off-n);
+                 ~~~~~~~~ ^ ~~~~~~~~~
+zip_source_zip.c:132:52: warning: implicit conversion loses integer precision: 'long long' to 'int' [-Wshorten-64-to-32]
+            i = (z->off-n > sizeof(b) ? sizeof(b) : z->off-n);
+              ~                                     ~~~~~~^~
+zip_source_zip.c:133:13: warning: implicit conversion loses integer precision: 'ssize_t' (aka 'long') to 'int' [-Wshorten-64-to-32]
+            if ((i=zip_fread(z->zf, b, i)) < 0) {
+                  ~^~~~~~~~~~~~~~~~~~~~~~
+zip_source_zip.c:143:14: warning: comparison of integers of different signs: 'size_t' (aka 'unsigned long') and 'off_t' (aka 'long long') [-Wsign-compare]
+            n = len > z->len ? z->len : len;
+                ~~~ ^ ~~~~~~
+zip_source_zip.c:143:28: warning: implicit conversion loses integer precision: 'off_t' (aka 'long long') to 'int' [-Wshorten-64-to-32]
+            n = len > z->len ? z->len : len;
+              ~                ~~~^~~
+zip_source_zip.c:143:34: warning: implicit conversion loses integer precision: 'size_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+            n = len > z->len ? z->len : len;
+              ~                         ^~~
+zip_source_zip.c:145:10: warning: implicit conversion loses integer precision: 'size_t' (aka 'unsigned long') to 'int' [-Wshorten-64-to-32]
+            n = len;
+              ~ ^~~
+zip_source_zip.c:148:9: warning: implicit conversion loses integer precision: 'ssize_t' (aka 'long') to 'int' [-Wshorten-64-to-32]
+        if ((i=zip_fread(z->zf, buf, n)) < 0)
+              ~^~~~~~~~~~~~~~~~~~~~~~~~
+8 warnings generated.
+compiling zip_stat.c
+compiling zip_stat_index.c
+compiling zip_stat_init.c
+compiling zip_strerror.c
+compiling zip_unchange.c
+compiling zip_unchange_all.c
+compiling zip_unchange_archive.c
+compiling zip_unchange_data.c
+compiling zipruby.c
+compiling zipruby_archive.c
+zipruby_archive.c:240:11: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    len = RSTRING_LEN(buffer);
+        ~ ^~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1000:6: note: expanded from macro 'RSTRING_LEN'
+     RSTRING_EMBED_LEN(str) : \
+     ^~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:996:6: note: expanded from macro 'RSTRING_EMBED_LEN'
+     (long)((RBASIC(str)->flags >> RSTRING_EMBED_LEN_SHIFT) & \
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+zipruby_archive.c:240:11: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    len = RSTRING_LEN(buffer);
+        ~ ^~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1001:28: note: expanded from macro 'RSTRING_LEN'
+     RSTRING(str)->as.heap.len)
+     ~~~~~~~~~~~~~~~~~~~~~~^~~
+zipruby_archive.c:300:63: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  res = zip_decrypt(RSTRING_PTR(path), RSTRING_PTR(password), pwdlen, &errorp, &wrongpwd);
+        ~~~~~~~~~~~                                           ^~~~~~
+zipruby_archive.c:331:63: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+  res = zip_encrypt(RSTRING_PTR(path), RSTRING_PTR(password), pwdlen, &errorp);
+        ~~~~~~~~~~~                                           ^~~~~~
+zipruby_archive.c:407:50: warning: format specifies type 'int' but the argument has type 'VALUE' (aka 'unsigned long') [-Wformat]
+    rb_raise(Error, "Get name failed at %d: %s", index, zip_strerror(p_archive->archive));
+                                        ~~       ^~~~~
+                                        %lu
+zipruby_archive.c:701:81: warning: format specifies type 'char *' but the argument has type 'struct RString *' [-Wformat]
+      rb_raise(rb_eRuntimeError, "Add io failed - %s: Entry name is not given", RSTRING(rb_inspect(file)));
+                                                  ~~                            ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1257:22: note: expanded from macro 'RSTRING'
+#define RSTRING(obj) (R_CAST(RString)(obj))
+                     ^~~~~~~~~~~~~~~~~~~~~~
+zipruby_archive.c:717:78: warning: format specifies type 'char *' but the argument has type 'struct RString *' [-Wformat]
+    rb_raise(rb_eRuntimeError, "Add io failed - %s: Cannot allocate memory", RSTRING(rb_inspect(file)));
+                                                ~~                           ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1257:22: note: expanded from macro 'RSTRING'
+#define RSTRING(obj) (R_CAST(RString)(obj))
+                     ^~~~~~~~~~~~~~~~~~~~~~
+zipruby_archive.c:726:47: warning: format specifies type 'char *' but the argument has type 'struct RString *' [-Wformat]
+    rb_raise(Error, "Add io failed - %s: %s", RSTRING(rb_inspect(file)), zip_strerror(p_archive->archive));
+                                     ~~       ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1257:22: note: expanded from macro 'RSTRING'
+#define RSTRING(obj) (R_CAST(RString)(obj))
+                     ^~~~~~~~~~~~~~~~~~~~~~
+zipruby_archive.c:780:97: warning: format specifies type 'char *' but the argument has type 'struct RString *' [-Wformat]
+    rb_raise(rb_eRuntimeError, "Replace io failed at %d - %s: Cannot allocate memory", i_index, RSTRING(rb_inspect(file)));
+                                                          ~~                                    ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1257:22: note: expanded from macro 'RSTRING'
+#define RSTRING(obj) (R_CAST(RString)(obj))
+                     ^~~~~~~~~~~~~~~~~~~~~~
+zipruby_archive.c:789:66: warning: format specifies type 'char *' but the argument has type 'struct RString *' [-Wformat]
+    rb_raise(Error, "Replace io failed at %d - %s: %s", i_index, RSTRING(rb_inspect(file)), zip_strerror(p_archive->archive));
+                                               ~~                ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1257:22: note: expanded from macro 'RSTRING'
+#define RSTRING(obj) (R_CAST(RString)(obj))
+                     ^~~~~~~~~~~~~~~~~~~~~~
+zipruby_archive.c:796:66: warning: format specifies type 'char *' but the argument has type 'struct RString *' [-Wformat]
+    rb_raise(Error, "Replace io failed at %d - %s: %s", i_index, RSTRING(rb_inspect(file)), zip_strerror(p_archive->archive));
+                                               ~~                ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1257:22: note: expanded from macro 'RSTRING'
+#define RSTRING(obj) (R_CAST(RString)(obj))
+                     ^~~~~~~~~~~~~~~~~~~~~~
+zipruby_archive.c:1104:11: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    len = RSTRING_LEN(comment);
+        ~ ^~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1000:6: note: expanded from macro 'RSTRING_LEN'
+     RSTRING_EMBED_LEN(str) : \
+     ^~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:996:6: note: expanded from macro 'RSTRING_EMBED_LEN'
+     (long)((RBASIC(str)->flags >> RSTRING_EMBED_LEN_SHIFT) & \
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+zipruby_archive.c:1104:11: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    len = RSTRING_LEN(comment);
+        ~ ^~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1001:28: note: expanded from macro 'RSTRING_LEN'
+     RSTRING(str)->as.heap.len)
+     ~~~~~~~~~~~~~~~~~~~~~~^~~
+zipruby_archive.c:1169:11: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    len = RSTRING_LEN(comment);
+        ~ ^~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1000:6: note: expanded from macro 'RSTRING_LEN'
+     RSTRING_EMBED_LEN(str) : \
+     ^~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:996:6: note: expanded from macro 'RSTRING_EMBED_LEN'
+     (long)((RBASIC(str)->flags >> RSTRING_EMBED_LEN_SHIFT) & \
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+zipruby_archive.c:1169:11: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    len = RSTRING_LEN(comment);
+        ~ ^~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1001:28: note: expanded from macro 'RSTRING_LEN'
+     RSTRING(str)->as.heap.len)
+     ~~~~~~~~~~~~~~~~~~~~~~^~~
+15 warnings generated.
+compiling zipruby_error.c
+compiling zipruby_file.c
+zipruby_file.c:260:11: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    len = RSTRING_LEN(comment);
+        ~ ^~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1000:6: note: expanded from macro 'RSTRING_LEN'
+     RSTRING_EMBED_LEN(str) : \
+     ^~~~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:996:6: note: expanded from macro 'RSTRING_EMBED_LEN'
+     (long)((RBASIC(str)->flags >> RSTRING_EMBED_LEN_SHIFT) & \
+     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+zipruby_file.c:260:11: warning: implicit conversion loses integer precision: 'long' to 'int' [-Wshorten-64-to-32]
+    len = RSTRING_LEN(comment);
+        ~ ^~~~~~~~~~~~~~~~~~~~
+/Users/sako/.rbenv/versions/2.6.5/include/ruby-2.6.0/ruby/ruby.h:1001:28: note: expanded from macro 'RSTRING_LEN'
+     RSTRING(str)->as.heap.len)
+     ~~~~~~~~~~~~~~~~~~~~~~^~~
+zipruby_file.c:13:14: warning: unused function 'zipruby_file' [-Wunused-function]
+static VALUE zipruby_file(VALUE klass);
+             ^
+3 warnings generated.
+compiling zipruby_stat.c
+compiling zipruby_zip.c
+compiling zipruby_zip_source_io.c
+compiling zipruby_zip_source_proc.c
+linking shared-object zipruby.bundle
+
+current directory: /Users/sako/amazon/vendor/bundle/ruby/2.6.0/gems/zipruby-0.3.6/ext
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 zipruby.bundle ./.gem.20200402-74558-2awmq6
