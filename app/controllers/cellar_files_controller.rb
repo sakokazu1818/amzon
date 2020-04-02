@@ -47,7 +47,7 @@ class CellarFilesController < ApplicationController
   end
 
   def search
-    path = ActiveStorage::Blob.service.path_for(@cellar_file.excel.key)
+    Scraping.run(@cellar_file)
     binding.pry
   end
 
