@@ -26,7 +26,7 @@ class CellarFilesController < ApplicationController
 
     respond_to do |format|
       if @cellar_file.save
-        format.html { redirect_to @cellar_file, notice: 'Cellar file was successfully created.' }
+        format.html { redirect_to action: 'index', notice: 'Cellar file was successfully created.' }
         format.json { render :show, status: :created, location: @cellar_file }
       else
         format.html { render :new }
@@ -50,7 +50,7 @@ class CellarFilesController < ApplicationController
     scraping = Scraping.new(@cellar_file)
     FileUtils.touch(Rails.root + 'tmp/hogemge')
 
-    bigin
+    begin
       scraping.run
     rescue
     end
