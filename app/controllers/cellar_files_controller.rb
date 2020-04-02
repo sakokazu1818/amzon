@@ -1,5 +1,5 @@
 class CellarFilesController < ApplicationController
-  before_action :set_cellar_file, only: [:show, :edit, :update, :destroy]
+  before_action :set_cellar_file, only: [:show, :edit, :update, :destroy, :search]
 
   # GET /cellar_files
   # GET /cellar_files.json
@@ -11,6 +11,12 @@ class CellarFilesController < ApplicationController
   def new
     @cellar_file = CellarFile.new
     @cellar_file.name = Time.current.strftime('%Y-%m-%d-%H-%M-%S.xlsx')
+
+    if CellarFile.all.length > 4
+      d_c_f = CellarFile.all.last
+      d_c_f.excel.purge if @cellar_file.excel.attached?
+      d_c_f.destroy
+    end
   end
 
   # POST /cellar_files
@@ -32,11 +38,17 @@ class CellarFilesController < ApplicationController
   # DELETE /cellar_files/1
   # DELETE /cellar_files/1.json
   def destroy
+    @cellar_file.excel.purge if @cellar_file.excel.attached?
     @cellar_file.destroy
     respond_to do |format|
       format.html { redirect_to cellar_files_url, notice: 'Cellar file was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def search
+    path = ActiveStorage::Blob.service.path_for(@cellar_file.excel.key)
+    binding.pry
   end
 
   private
