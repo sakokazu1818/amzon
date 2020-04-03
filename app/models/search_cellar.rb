@@ -13,8 +13,9 @@ class SearchCellar
     begin
       # scraping = MechanizeScraping.new(@xlsx)
       scraping = SeleniumScraping.new(@xlsx)
-      
       scraping.run
+
+      binding.pry
       finalize
     rescue
       delete_working_files
