@@ -30,45 +30,53 @@ class SeleniumScraping
     }
   end
 
-  def scraping
-    scraping_results = []
-    begin
-      start_scraping @search_criteria['商品ページURL'] do
-        target_area = find_all(:css, '#desktop-dp-sims_session-similarities-sims-feature .a-carousel-controls')
-        if target_area.length != 1
-          raise
+  def collect_page
+    pages = []
+    start_scraping @search_criteria['商品ページURL'] do
+      target_area = find_all(:css, '#desktop-dp-sims_session-similarities-sims-feature .a-carousel-controls')
+      if target_area.length != 1
+        raise
+      end
+
+      try = 1
+      begin
+        execute_script('window.scrollBy(0, 300)')
+        page_max = find(:css, '#sims-consolidated-2_feature_div .a-carousel-page-max').text.to_i
+      rescue => e
+        try += 1
+        retry if try < 10
+
+        pages << e
+      end
+
+      page_max.times do |page|
+        target_area.first.find_all(:css, '.a-carousel-center li').each.with_index(1) do |tl, i|
+          pages << find_all(:xpath, "/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol/li[#{i}]/div/a").first[:href]
         end
 
-        try = 1
+        break if page == page_max - 1
+
         begin
-          execute_script('window.scrollBy(0, 300)')
-          page_max = find(:css, '#sims-consolidated-2_feature_div .a-carousel-page-max').text.to_i - 1
+          target_area.first.find(:css, '.a-carousel-goto-nextpage').click
         rescue => e
           try += 1
           retry if try < 10
 
-          scraping_results << {asin: e}
-          raise
+          pages << e
         end
 
-        page_max.times do |page|
-          target_area.first.find_all(:css, '.a-carousel-center li').each do |tl|
-            scraping_results << {asin: tl.text}
-          end
-
-          begin
-            target_area.first.find(:css, '.a-carousel-goto-nextpage').click
-          rescue => e
-            try += 1
-            binding.pry
-            retry if try < 10
-
-            scraping_results << {asin: e}
-          end
-
-          sleep 1
-        end
+        sleep 1
       end
+    end
+
+    pages
+  end
+
+  def scraping
+    scraping_results = []
+    begin
+      pages = collect_page
+      binding.pry
     rescue => e
       scraping_results << {asin: e}
     end
