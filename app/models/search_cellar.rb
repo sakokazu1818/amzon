@@ -4,18 +4,16 @@ class SearchCellar
     @origin_path = ActiveStorage::Blob.service.path_for(@cellar_file.excel.key)
     @working_files_path = @origin_path + '.xlsx'
     FileUtils.cp(@origin_path, @working_files_path)
-    @xlsx = Roo::Excelx.new(@working_files_path)
-    @xlsx.default_sheet = @xlsx.sheets[0]
+    @xlsx_io = ExcelxIo.new(@working_files_path, 0)
   end
 
   def run
     # TODO 取得失敗しやヌメをエクセル出力するので try いらない
     begin
-      # scraping = MechanizeScraping.new(@xlsx)
-      scraping = SeleniumScraping.new(@xlsx)
+      # scraping = MechanizeScraping.new(@xlsx_io)
+      scraping = SeleniumScraping.new(@xlsx_io)
       scraping.run
 
-      binding.pry
       finalize
     rescue
       delete_working_files

@@ -1,6 +1,6 @@
 class SeleniumScraping
-  def initialize(xlsx)
-    @xlsx = xlsx
+  def initialize(xlsx_io)
+    @xlsx_io = xlsx_io
     Capybara.register_driver :selenium do |app|
       # headless
       Capybara::Selenium::Driver.new(app,
@@ -18,15 +18,9 @@ class SeleniumScraping
 
   def run
     # crome80
-    set_search_criteria
+    @search_criteria = @xlsx_io.search_criteria
     scraping_results = scraping
-  end
-
-  def set_search_criteria
-    @search_criteria = {}
-    @xlsx.each_row_streaming(offset: 1, max_rows: 1) do |row|
-      @search_criteria[row[0].value] = row[1].value
-    end
+    binding.pry
   end
 
   def start_scraping(url, &block)
@@ -45,35 +39,40 @@ class SeleniumScraping
           raise
         end
 
-        scroll_end = false
-        loop do
-          target_list = target_area.first.find_all(:css, '.a-carousel-center li')
-          if target_list.last.text == ''
-            break
+        try = 1
+        begin
+          execute_script('window.scrollBy(0, 300)')
+          page_max = find(:css, '#sims-consolidated-2_feature_div .a-carousel-page-max').text.to_i - 1
+        rescue => e
+          try += 1
+          retry if try < 10
+
+          scraping_results << {asin: e}
+          raise
+        end
+
+        page_max.times do |page|
+          target_area.first.find_all(:css, '.a-carousel-center li').each do |tl|
+            scraping_results << {asin: tl.text}
           end
 
-          target_list.each do |tl|
-            scraping_results << {asin: e}
-          end
-
-          try = 1
           begin
-            execute_script('window.scrollBy(0, 300)') unless scroll_end
             target_area.first.find(:css, '.a-carousel-goto-nextpage').click
           rescue => e
-            p try
             try += 1
-            retry if try > 10
+            binding.pry
+            retry if try < 10
 
             scraping_results << {asin: e}
-            raise
           end
-          scroll_end = true
-          sleep 2
+
+          sleep 1
         end
       end
     rescue => e
       scraping_results << {asin: e}
     end
+
+    scraping_results
   end
 end
