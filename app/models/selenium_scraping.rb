@@ -2,15 +2,11 @@ class SeleniumScraping
   def initialize(xlsx_io)
     @xlsx_io = xlsx_io
     Capybara.register_driver :selenium do |app|
-      # headless
-      Capybara::Selenium::Driver.new(app,
-        browser: :chrome,
-        desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
-          chrome_options: {
-            args: %w(disable-gpu window-size=1280,800),
-          },
-        )
-      )
+      options = Selenium::WebDriver::Chrome::Options.new
+      options.add_argument('headless') # ヘッドレスモードをonにするオプション
+      options.add_argument('--disable-gpu') # 暫定的に必要なフラグとのこと
+      options.add_argument('window-size=1280,800')
+      Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
     end
 
     Capybara.javascript_driver = :selenium
@@ -51,7 +47,21 @@ class SeleniumScraping
 
       page_max.times do |page|
         target_area.first.find_all(:css, '.a-carousel-center li').each.with_index(1) do |tl, i|
-          pages << find_all(:xpath, "/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol/li[#{i}]/div/a").first[:href]
+          try = 1
+          href = nil
+          loop do
+            href = find_all(:xpath, "/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol/li[#{i}]/div/a").try(:first)
+            unless href.nil?
+              href = href[:href]
+              break
+            else
+              p try
+              break if try > 10
+              try += 1
+            end
+          end
+
+          pages << href
         end
 
         break if page == page_max - 1
@@ -64,8 +74,6 @@ class SeleniumScraping
 
           pages << e
         end
-
-        sleep 1
       end
     end
 

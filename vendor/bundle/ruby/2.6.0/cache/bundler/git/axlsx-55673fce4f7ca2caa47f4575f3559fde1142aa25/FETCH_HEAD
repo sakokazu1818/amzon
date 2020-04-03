@@ -1,0 +1,32 @@
+ea66a00e1a6275ce263ba943c45d1e6ff844eb0c		branch '2.0.0' of https://github.com/randym/axlsx
+8000296014ce1c69402376e6ac4442aab04eb813		branch 'appveyor' of https://github.com/randym/axlsx
+a1f64c74f44c3ce2c32061d1adf9baab94aef4ba		branch 'auto_filter' of https://github.com/randym/axlsx
+09c9170e50ed4550015e34fdb54b7433bee0ef40		branch 'bookview_sheetstate' of https://github.com/randym/axlsx
+3a174bc69ac213939565da20e14eeb9e18d5413f		branch 'cell_name' of https://github.com/randym/axlsx
+f8fba202f3943610ae679cdef8e223dc556be24b		branch 'cfr_bugfix' of https://github.com/randym/axlsx
+d054ce0bc01eaf31006b8c852b17fdd4c95bc913		branch 'digsig' of https://github.com/randym/axlsx
+be2d7bee9b9236fff4a378db8770c3ae793e8422		branch 'go-faster' of https://github.com/randym/axlsx
+8e7b4b3b7259103452c191f73ce0bf64f66033fe		branch 'master' of https://github.com/randym/axlsx
+9a8825d4edff3971c1b1fde22a13b6a9dbdf0c07		branch 'mscrypto' of https://github.com/randym/axlsx
+3c9bca0d855f8d236fffba42a04aea2aae0be497		branch 'pane' of https://github.com/randym/axlsx
+d5c58edeafeb784f55e3ef36cc6e2c6afe923906		branch 'parser' of https://github.com/randym/axlsx
+73d9477fc33706f4a186e92794134248fb389183		branch 'release-3.0.0' of https://github.com/randym/axlsx
+bba04f7eca5a55652227dac468a93afe0436166f		branch 'rubyzip-0.x' of https://github.com/randym/axlsx
+2996a3d92d501e13f0ff48dabe5c5a07ac895d1a	not-for-merge	tag '1.0.13' of https://github.com/randym/axlsx
+bd76822d6d053d34b7348e36ee306c7aa636f143	not-for-merge	tag '1.0.14' of https://github.com/randym/axlsx
+c16ba34f2165712f37470d127039beb8343f8cfe	not-for-merge	tag '1.0.15' of https://github.com/randym/axlsx
+057b5ebaf96ba6a66ed56bf5ef8a3184a482cec8	not-for-merge	tag '1.0.16' of https://github.com/randym/axlsx
+8bcc77953262fd934bd4b84daf53d946c576193b	not-for-merge	tag '1.0.17' of https://github.com/randym/axlsx
+b727aeec4a8ad3fdf4677c4cc7b37b461c103a15	not-for-merge	tag '1.1.0' of https://github.com/randym/axlsx
+77116ada29dec65f399ec4e75463a8ec5bd3b2e4	not-for-merge	tag '1.1.1' of https://github.com/randym/axlsx
+2fc77a8579db5211da84ef717647f0a0d80857b8	not-for-merge	tag '1.1.3' of https://github.com/randym/axlsx
+03103965277963e3c62bb92ce8bb84a177b9d9bd	not-for-merge	tag '1.1.4' of https://github.com/randym/axlsx
+2e1e14dd8f91e8a1416faae9501fdf04638104c7	not-for-merge	tag '1.1.5' of https://github.com/randym/axlsx
+84859056e05b96f0ef856dfec2a08a21342d3b95	not-for-merge	tag '1.1.7' of https://github.com/randym/axlsx
+ef0b9ad23c56c1d558ff4dc3a946e69a26d7fe17	not-for-merge	tag '1.2.0' of https://github.com/randym/axlsx
+69f5cc60d8b6a0057b255f164efd9496fbeac686	not-for-merge	tag '1.2.1' of https://github.com/randym/axlsx
+f971db198d597c989f3a93014005d958b2d91878	not-for-merge	tag '1.2.3' of https://github.com/randym/axlsx
+eb4ced67fe229a82be0b50990479b565672c1f7d	not-for-merge	tag '1.3.1' of https://github.com/randym/axlsx
+9900e5e33607780f2bae571c7270977e0d93cb81	not-for-merge	tag '1.3.4' of https://github.com/randym/axlsx
+077a9d56728b4a235c4f07a854801a298220c55c	not-for-merge	tag '1.3.6' of https://github.com/randym/axlsx
+3084dffe32faf9063bcfff04cc4888c0356ed81d	not-for-merge	tag 'v2.0.0' of https://github.com/randym/axlsx
