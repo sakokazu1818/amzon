@@ -37,6 +37,7 @@ class SeleniumScraping
 
   def collect_page
     pages = []
+    pages_info = []
     @driver.get(@search_criteria['商品ページURL'])
     scroll_for_target
 
@@ -48,14 +49,14 @@ class SeleniumScraping
     @wait.until{ @driver.find_element(:xpath, page_max_xpath).displayed? }
     page_max = @driver.find_element(:xpath, page_max_xpath).text.to_i
 
-    page_max.times do |page_index|
-      p "page_index #{page_index}"
+    1.upto page_max do |page_index|
       ol_xpath = '/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol'
       @wait.until{ @driver.find_element(:xpath, ol_xpath).displayed? }
       li = @driver.find_element(:xpath, ol_xpath).find_elements(css: 'li')
 
+      li_index = []
       1.upto li.length do |i|
-        p "li_index #{i}"
+        li_index << "#{i}"
         sleep SLEEP_TIME
         begin
           li_xpath = "/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol/li[#{i}]"
@@ -68,8 +69,9 @@ class SeleniumScraping
           pages << nil
         end
       end
+      pages_info << {page_index: page_index, li_index: li_index}
 
-      break if page_index >= page_max - 1
+      break if page_index > page_max - 1
 
       begin
         next_btn_xpath = '/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[3]/a'
@@ -85,7 +87,7 @@ class SeleniumScraping
     end
 
     @driver.quit
-    pages.compact
+    [pages_info, pages.compact]
   end
 
   def scraping_details(pages)
