@@ -1,4 +1,12 @@
 class SeleniumScraping
+  if Rails.env.production?
+    WAIT_TIME = 60
+    SLEEP_TIME = 3
+  else
+    WAIT_TIME = 1
+    SLEEP_TIME = 1
+  end
+
   def initialize(xlsx_io)
     @xlsx_io = xlsx_io
     options = Selenium::WebDriver::Chrome::Options.new
@@ -10,11 +18,7 @@ class SeleniumScraping
     options.add_argument('--disable-gpu') # 暫定的に必要なフラグとのこと
     options.add_argument('window-size=1280,800')
     @driver = Selenium::WebDriver.for :chrome, options: options
-    if Rails.env.production?
-      @wait = Selenium::WebDriver::Wait.new(timeout: 60)
-    else
-      @wait = Selenium::WebDriver::Wait.new(timeout: 5)
-    end
+    @wait = Selenium::WebDriver::Wait.new(timeout: WAIT_TIME)
   end
 
   def run
@@ -45,11 +49,14 @@ class SeleniumScraping
     page_max = @driver.find_element(:xpath, page_max_xpath).text.to_i
 
     page_max.times do |page_index|
+      p "page_index #{page_index}"
       ol_xpath = '/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol'
       @wait.until{ @driver.find_element(:xpath, ol_xpath).displayed? }
       li = @driver.find_element(:xpath, ol_xpath).find_elements(css: 'li')
 
       1.upto li.length do |i|
+        p "li_index #{i}"
+        sleep SLEEP_TIME
         begin
           li_xpath = "/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol/li[#{i}]"
           @wait.until{ @driver.find_element(:xpath, li_xpath).displayed? }
