@@ -7,11 +7,11 @@ class SeleniumScraping
     SLEEP_TIME = 1
   end
 
-  def initialize(xlsx_io)
+  def initialize(xlsx_io, headless_mode: false)
     @xlsx_io = xlsx_io
     options = Selenium::WebDriver::Chrome::Options.new
 
-    if Rails.env.production?
+    if Rails.env.production? || headless_mode
       options.add_argument('headless') # ヘッドレスモードをonにするオプション
     end
 
@@ -26,6 +26,11 @@ class SeleniumScraping
     @search_criteria = @xlsx_io.search_criteria
     scraping_results = scraping
     binding.pry
+  end
+
+  def test_run
+    @driver.get('https://www.google.co.jp/')
+    p @driver.page_source
   end
 
   def scroll_for_target

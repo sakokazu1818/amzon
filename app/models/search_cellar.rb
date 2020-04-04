@@ -7,12 +7,16 @@ class SearchCellar
     @xlsx_io = ExcelxIo.new(@working_files_path, 0)
   end
 
-  def run
-    # TODO 取得失敗しやヌメをエクセル出力するので try いらない
+  def run(mode: 'prod')
     begin
       # scraping = MechanizeScraping.new(@xlsx_io)
-      scraping = SeleniumScraping.new(@xlsx_io)
-      scraping.run
+      if mode == 'test'
+        scraping = SeleniumScraping.new(@xlsx_io, headless_mode: true)
+        scraping.test_run
+      else
+        scraping = SeleniumScraping.new(@xlsx_io, headless_mode: false)
+        scraping.run
+      end
 
       finalize
     rescue

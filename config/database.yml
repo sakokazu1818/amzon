@@ -50,5 +50,3 @@ test:
 production:
   <<: *default
   database: amazon_production
-  username: amazon
-  password: <%= ENV['AMAZON_DATABASE_PASSWORD'] %>
