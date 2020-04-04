@@ -78,7 +78,7 @@ class SeleniumScraping
     end
 
     @driver.quit
-    pages
+    pages.compact
   end
 
   def scraping_details(pages)
