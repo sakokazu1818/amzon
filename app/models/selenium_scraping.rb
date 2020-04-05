@@ -7,11 +7,10 @@ class SeleniumScraping
     SLEEP_TIME = 1
   end
 
-  def initialize(xlsx_io, headless_mode: false)
-    @xlsx_io = xlsx_io
+  def set_driver
     options = Selenium::WebDriver::Chrome::Options.new
 
-    if Rails.env.production? || headless_mode
+    if Rails.env.production? || @headless_mode
       options.add_argument('headless') # ヘッドレスモードをonにするオプション
     end
 
@@ -20,6 +19,12 @@ class SeleniumScraping
     @driver = Selenium::WebDriver.for :chrome, options: options
     @driver.manage.timeouts.implicit_wait = WAIT_TIME
     @wait = Selenium::WebDriver::Wait.new(timeout: WAIT_TIME)
+  end
+
+  def initialize(xlsx_io, headless_mode: false)
+    @xlsx_io = xlsx_io
+    @headless_mode = headless_mode
+    set_driver
   end
 
   def run
@@ -97,15 +102,17 @@ class SeleniumScraping
   end
 
   def scraping_details(pages)
-    pages.each do |page|
+    page_info = []
+    pages.each_with_index do |page, pages_index|
       next if page.nil?
+      set_driver if @driver.nil?
       @driver.get(page)
-      page_info = {}
 
+      page_info[pages_index] = {}
       shop_name_xpath = '//*[@id="sellerProfileTriggerId"]'
       @wait.until{ @driver.find_element(:xpath, shop_name_xpath).displayed? }
       shop_name = @driver.find_element(:xpath, shop_name_xpath)
-      page_info[:shop_name] = shop_name[:text]
+      page_info[pages_index][:shop_name] = shop_name[:text]
       shop_name.click
 
       sleep SLEEP_TIME
@@ -114,21 +121,20 @@ class SeleniumScraping
       @driver.find_element(:xpath, store_front_xpath).click
 
       store_front_url = @driver.current_url
-      page_info[:store_front_url] = store_front_url
+      page_info[pages_index][:store_front_url] = store_front_url
 
       uri = URI::parse(store_front_url)
       q_array = URI::decode_www_form(uri.query)
       q_hash = Hash[q_array]
-      page_info[:cellar_id] = q_hash['me']
+      page_info[pages_index][:cellar_id] = q_hash['me']
 
       product_count_xpath = '/html/body/div[1]/div[2]/span/div/span/h1/div/div[1]/div/div/span[1]'
       @wait.until{ @driver.find_element(:xpath, product_count_xpath).displayed? }
       product_count = @driver.find_element(:xpath, product_count_xpath).text.split(' ')[1].to_i
 
-      products = {over_price: 0, prime: 0}
+      products = {totla: product_count, over_price: 0, prime: 0}
       product_index = 1
       1.upto product_count do |i|
-        p i
         sleep SLEEP_TIME
         begin
           price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
@@ -162,9 +168,11 @@ class SeleniumScraping
         end
       end
 
-      page_info[:products] = products
+      page_info[pages_index][:products] = products
       binding.pry
       @driver.quit
+      @driver = nil
+      sleep SLEEP_TIME
     end
   end
 
