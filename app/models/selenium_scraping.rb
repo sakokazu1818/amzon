@@ -139,7 +139,7 @@ class SeleniumScraping
         begin
           price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
           @wait.until{ @driver.find_element(:xpath, price_xpath).displayed? }
-          if @driver.find_element(:xpath, price_xpath).text.split("\n").first.delete('￥').delete(',').to_i > 1500
+          if @driver.find_element(:xpath, price_xpath).text.split("\n").first.delete('￥').delete(',').to_i > @search_criteria['価格条件']
             products[:over_price] = products[:over_price] += 1
           end
 

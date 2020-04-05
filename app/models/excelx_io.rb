@@ -6,7 +6,7 @@ class ExcelxIo
 
   def search_criteria
     @search_criteria = {}
-    @roo_xlsx.each_row_streaming(offset: 1, max_rows: 1) do |row|
+    @roo_xlsx.each_row_streaming(offset: 1, max_rows: 2) do |row|
       @search_criteria[row[0].value] = row[1].value
     end
 
