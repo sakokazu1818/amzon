@@ -1,9 +1,9 @@
 class SeleniumScraping
   if Rails.env.production?
-    WAIT_TIME = 60
+    WAIT_TIME = 20
     SLEEP_TIME = 3
   else
-    WAIT_TIME = 60
+    WAIT_TIME = 5
     SLEEP_TIME = 1
   end
 
@@ -134,24 +134,31 @@ class SeleniumScraping
 
       products = {totla: product_count, over_price: 0, prime: 0}
       product_index = 1
+      @next_page_href = nil
+      @next_page_index = 1
       1.upto product_count do |i|
         sleep SLEEP_TIME
+        price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
         begin
-          price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
           @wait.until{ @driver.find_element(:xpath, price_xpath).displayed? }
           if @driver.find_element(:xpath, price_xpath).text.split("\n").first.delete('￥').delete(',').to_i > @search_criteria['価格条件']
             products[:over_price] = products[:over_price] += 1
           end
+        rescue => e
+          break
+          next
+        end
 
-          prime_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[2]"
-          if @driver.find_element(:xpath, prime_xpath).text.include?('までに')
-            products[:prime] = products[:prime] += 1
-          end
+        prime_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[2]"
+        if @driver.find_element(:xpath, prime_xpath).text.include?('までに')
+          products[:prime] = products[:prime] += 1
+        end
 
-          p products
-          product_index += 1
+        p products
+        product_index += 1
 
-          if i % 16 == 0
+        if i % 16 == 0
+          if @next_page_href.nil?
             @driver.execute_script("var element = document.getElementsByClassName('a-pagination')[0];
               var rect = element.getBoundingClientRect();
               var elemtop = rect.top + window.pageYOffset;
@@ -161,19 +168,41 @@ class SeleniumScraping
             next_btn_xpath = '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]'
             @wait.until{ @driver.find_element(:xpath, next_btn_xpath).displayed? }
             @driver.find_element(:xpath, next_btn_xpath).click
+
+            @next_page_href = @driver.current_url
+            @next_page_index += 1
+            product_index = 1
+          else
+            @next_page_index += 1
+            uri = URI::parse(@next_page_href)
+            q_array = URI::decode_www_form(uri.query)
+            q_hash = Hash[q_array]
+            q_hash['page'] = @next_page_index
+
+            @next_page_href = 'https://' + uri.host + '/s?'
+            q_hash.each do |k,v|
+              @next_page_href = @next_page_href + k.to_s + '=' + v.to_s + '&'
+            end
+            @next_page_href = @next_page_href.chop
+
+            @driver.quit
+            @driver = nil
+            set_driver
+            @driver.get(@next_page_href)
+            sleep SLEEP_TIME
             product_index = 1
           end
-        rescue => e
-          p e
         end
       end
 
       page_info[pages_index][:products] = products
-      binding.pry
       @driver.quit
       @driver = nil
       sleep SLEEP_TIME
+      p page_info
     end
+
+    return page_info
   end
 
   def scraping
