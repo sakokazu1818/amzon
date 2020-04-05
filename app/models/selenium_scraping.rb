@@ -106,6 +106,8 @@ class SeleniumScraping
     page_info = []
     pages[1].each_with_index do |page, pages_index|
       next if page.nil?
+      next if page.include?('help/customer')
+
       set_driver if @driver.nil?
       @driver.get(page)
 
@@ -215,14 +217,12 @@ class SeleniumScraping
       scraping_results << {asin: e}
     end
 
-    retun scraping_results if pages.blank? || scraping_results.present?
+    return scraping_results unless scraping_results.empty?
 
     begin
- #      pages = ["https://www.amazon.co.jp/Bigtron-%E3%83%99%E3%83%AB%E3%83%88%E7%A9%B4%E3%81%82%E3%81%91%E6%A9%9F-12%E6%9C%AC%E3%82%BB%E3%83%83%E3%83%88-3mm-14mm-%E3%83%8F%E3%83%88%E3%83%A1%E6%8A%9C%E3%81%8D%E4%B8%B8%E3%81%84%E7%A9%B4%E3%81%82%E3%81%91/dp/B075M9F99Q/ref=pd_aw_sbs_60_1/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B075M9F99Q&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180",
- # "https://www.amazon.co.jp/Amzbarley-%E7%A9%B4%E3%81%82%E3%81%91%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%99%E3%83%AB%E3%83%88%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%AC%E3%82%B6%E3%83%BC%E3%82%AF%E3%83%A9%E3%83%95%E3%83%88-%E3%83%AC%E3%82%B6%E3%83%BC%E3%83%91%E3%83%B3%E3%83%81/dp/B0827VZ61R/ref=pd_aw_sbs_60_2/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B0827VZ61R&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180",
- # "https://www.amazon.co.jp/10%E6%9C%AC-%E7%A9%B4%E3%81%82%E3%81%91%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%AC%E3%82%B6%E3%83%BC%E3%82%AF%E3%83%A9%E3%83%95%E3%83%88%E5%B7%A5%E5%85%B7-%E3%83%8F%E3%83%88%E3%83%A1%E6%8A%9C%E3%81%8D-%E3%83%9D%E3%83%B3%E3%83%81%E3%82%BB%E3%83%83%E3%83%880-5mm%E3%80%811mm%E3%80%811-5mm%E3%80%812mm%E3%80%812-5mm%E3%80%813mm%E3%80%813-5mm%E3%80%814mm%E3%80%814-5mm%E3%80%815mm/dp/B07T96J2JV/ref=pd_aw_sbs_60_3/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B07T96J2JV&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180",
- # "https://www.amazon.co.jp/%E3%82%B9%E3%83%88%E3%83%83%E3%82%AB%E3%83%BC-%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%88-2%E5%80%8B%E3%82%BB%E3%83%83%E3%83%88-%E3%82%A4%E3%83%B3%E3%83%86%E3%83%AA%E3%82%A2-%E3%82%AC%E3%83%BC%E3%83%87%E3%83%8B%E3%83%B3%E3%82%B0/dp/B00LD25RCU/ref=pd_aw_sbs_60_4/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B086JMMFCP&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180",
- # "https://www.amazon.co.jp/%E9%AB%98%E5%84%80-GISUKE-%E5%8F%96%E6%9B%BF%E5%BC%8F%E3%83%9D%E3%83%B3%E3%83%81%E3%82%BB%E3%83%83%E3%83%88-%E3%83%9D%E3%83%B3%E3%83%81%E7%94%A8%E4%B8%8B%E6%95%B7%E3%81%8D%E4%BB%98-No-1/dp/B006JZGV3K/ref=pd_aw_sbs_60_5/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B006JZGV3K&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180"]
+      # pages = [nil,[
+      #   "https://www.amazon.co.jp/Bigtron-%E3%83%99%E3%83%AB%E3%83%88%E7%A9%B4%E3%81%82%E3%81%91%E6%A9%9F-12%E6%9C%AC%E3%82%BB%E3%83%83%E3%83%88-3mm-14mm-%E3%83%8F%E3%83%88%E3%83%A1%E6%8A%9C%E3%81%8D%E4%B8%B8%E3%81%84%E7%A9%B4%E3%81%82%E3%81%91/dp/B075M9F99Q/ref=pd_aw_sbs_60_1/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B075M9F99Q&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180",
+      #   "https://www.amazon.co.jp/Amzbarley-%E7%A9%B4%E3%81%82%E3%81%91%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%99%E3%83%AB%E3%83%88%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%AC%E3%82%B6%E3%83%BC%E3%82%AF%E3%83%A9%E3%83%95%E3%83%88-%E3%83%AC%E3%82%B6%E3%83%BC%E3%83%91%E3%83%B3%E3%83%81/dp/B0827VZ61R/ref=pd_aw_sbs_60_2/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B0827VZ61R&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180"]]
       scraping_details(pages)
     rescue => e
       scraping_results << {asin: e}
