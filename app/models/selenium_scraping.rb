@@ -3,7 +3,7 @@ class SeleniumScraping
     WAIT_TIME = 20
     SLEEP_TIME = 3
   else
-    WAIT_TIME = 5
+    WAIT_TIME = 10
     SLEEP_TIME = 1
   end
 
@@ -108,100 +108,107 @@ class SeleniumScraping
       next if page.nil?
       next if page.include?('help/customer')
 
-      set_driver if @driver.nil?
-      @driver.get(page)
+      begin
+        set_driver if @driver.nil?
+        @driver.get(page)
 
-      page_info[pages_index] = {}
-      shop_name_xpath = '//*[@id="sellerProfileTriggerId"]'
-      @wait.until{ @driver.find_element(:xpath, shop_name_xpath).displayed? }
-      shop_name = @driver.find_element(:xpath, shop_name_xpath)
-      page_info[pages_index][:shop_name] = shop_name[:text]
-      shop_name.click
+        page_info[pages_index] = {}
+        shop_name_xpath = '//*[@id="sellerProfileTriggerId"]'
+        @wait.until{ @driver.find_element(:xpath, shop_name_xpath).displayed? }
+        shop_name = @driver.find_element(:xpath, shop_name_xpath)
+        page_info[pages_index][:shop_name] = shop_name[:text]
+        shop_name.click
 
-      sleep SLEEP_TIME
-      store_front_xpath = '/html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div/div/div[2]/a'
-      @wait.until{ @driver.find_element(:xpath, store_front_xpath).displayed? }
-      @driver.find_element(:xpath, store_front_xpath).click
-
-      store_front_url = @driver.current_url
-      page_info[pages_index][:store_front_url] = store_front_url
-
-      uri = URI::parse(store_front_url)
-      q_array = URI::decode_www_form(uri.query)
-      q_hash = Hash[q_array]
-      page_info[pages_index][:cellar_id] = q_hash['me']
-
-      product_count_xpath = '/html/body/div[1]/div[2]/span/div/span/h1/div/div[1]/div/div/span[1]'
-      @wait.until{ @driver.find_element(:xpath, product_count_xpath).displayed? }
-      product_count = @driver.find_element(:xpath, product_count_xpath).text.split(' ')[1].to_i
-
-      products = {totla: product_count, over_price: 0, prime: 0}
-      product_index = 1
-      @next_page_href = nil
-      @next_page_index = 1
-      1.upto product_count do |i|
         sleep SLEEP_TIME
-        price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
-        begin
-          @wait.until{ @driver.find_element(:xpath, price_xpath).displayed? }
-          if @driver.find_element(:xpath, price_xpath).text.split("\n").first.delete('￥').delete(',').to_i > @search_criteria['価格条件']
-            products[:over_price] = products[:over_price] += 1
-          end
-        rescue => e
-          break
-          next
-        end
+        store_front_xpath = '/html/body/div[1]/div[2]/div[2]/div[1]/div[1]/div/div/div[2]/a'
+        @wait.until{ @driver.find_element(:xpath, store_front_xpath).displayed? }
+        @driver.find_element(:xpath, store_front_xpath).click
 
-        prime_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[2]"
-        if @driver.find_element(:xpath, prime_xpath).text.include?('までに')
-          products[:prime] = products[:prime] += 1
-        end
+        store_front_url = @driver.current_url
+        page_info[pages_index][:store_front_url] = store_front_url
 
-        p products
-        product_index += 1
+        uri = URI::parse(store_front_url)
+        q_array = URI::decode_www_form(uri.query)
+        q_hash = Hash[q_array]
+        page_info[pages_index][:cellar_id] = q_hash['me']
 
-        if i % 16 == 0
-          if @next_page_href.nil?
-            @driver.execute_script("var element = document.getElementsByClassName('a-pagination')[0];
-              var rect = element.getBoundingClientRect();
-              var elemtop = rect.top + window.pageYOffset;
-              document.documentElement.scrollTop = elemtop;")
+        product_count_xpath = '/html/body/div[1]/div[2]/span/div/span/h1/div/div[1]/div/div/span[1]'
+        @wait.until{ @driver.find_element(:xpath, product_count_xpath).displayed? }
+        product_count = @driver.find_element(:xpath, product_count_xpath).text.split(' ')[1].to_i
 
-            sleep SLEEP_TIME
-            next_btn_xpath = '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]'
-            @wait.until{ @driver.find_element(:xpath, next_btn_xpath).displayed? }
-            @driver.find_element(:xpath, next_btn_xpath).click
-
-            @next_page_href = @driver.current_url
-            @next_page_index += 1
-            product_index = 1
-          else
-            @next_page_index += 1
-            uri = URI::parse(@next_page_href)
-            q_array = URI::decode_www_form(uri.query)
-            q_hash = Hash[q_array]
-            q_hash['page'] = @next_page_index
-
-            @next_page_href = 'https://' + uri.host + '/s?'
-            q_hash.each do |k,v|
-              @next_page_href = @next_page_href + k.to_s + '=' + v.to_s + '&'
+        products = {totla: product_count, over_price: 0, prime: 0}
+        product_index = 1
+        @next_page_href = nil
+        @next_page_index = 1
+        1.upto product_count do |i|
+          sleep SLEEP_TIME
+          price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
+          begin
+            @wait.until{ @driver.find_element(:xpath, price_xpath).displayed? }
+            if @driver.find_element(:xpath, price_xpath).text.split("\n").first.delete('￥').delete(',').to_i > @search_criteria['価格条件']
+              products[:over_price] = products[:over_price] += 1
             end
-            @next_page_href = @next_page_href.chop
+          rescue => e
+            break
+          end
 
-            @driver.quit
-            @driver = nil
-            set_driver
-            @driver.get(@next_page_href)
-            sleep SLEEP_TIME
-            product_index = 1
+          prime_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[2]"
+          if @driver.find_element(:xpath, prime_xpath).text.include?('までに')
+            products[:prime] = products[:prime] += 1
+          end
+
+          p products
+          product_index += 1
+
+          if i % 16 == 0
+            if @next_page_href.nil?
+              @driver.execute_script("var element = document.getElementsByClassName('a-pagination')[0];
+                var rect = element.getBoundingClientRect();
+                var elemtop = rect.top + window.pageYOffset;
+                document.documentElement.scrollTop = elemtop;")
+
+              sleep SLEEP_TIME
+              next_btn_xpath = '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]'
+              @wait.until{ @driver.find_element(:xpath, next_btn_xpath).displayed? }
+              @driver.find_element(:xpath, next_btn_xpath).click
+
+              @next_page_href = @driver.current_url
+              @next_page_index += 1
+              product_index = 1
+            else
+              @next_page_index += 1
+              uri = URI::parse(@next_page_href)
+              q_array = URI::decode_www_form(uri.query)
+              q_hash = Hash[q_array]
+              q_hash['page'] = @next_page_index
+
+              @next_page_href = 'https://' + uri.host + '/s?'
+              q_hash.each do |k,v|
+                @next_page_href = @next_page_href + k.to_s + '=' + v.to_s + '&'
+              end
+              @next_page_href = @next_page_href.chop
+
+              @driver.quit
+              @driver = nil
+              set_driver
+              @driver.get(@next_page_href)
+              sleep SLEEP_TIME
+              product_index = 1
+            end
           end
         end
+        page_info[pages_index][:products] = products
+        @driver.quit
+        @driver = nil
+        sleep SLEEP_TIME
+      rescue
+        page_info[pages_index][:products] = products
+        @driver.quit
+        @driver = nil
+        sleep SLEEP_TIME
+        next
       end
 
-      page_info[pages_index][:products] = products
-      @driver.quit
-      @driver = nil
-      sleep SLEEP_TIME
       p page_info
     end
 
@@ -223,9 +230,9 @@ class SeleniumScraping
       # pages = [nil,[
       #   "https://www.amazon.co.jp/Bigtron-%E3%83%99%E3%83%AB%E3%83%88%E7%A9%B4%E3%81%82%E3%81%91%E6%A9%9F-12%E6%9C%AC%E3%82%BB%E3%83%83%E3%83%88-3mm-14mm-%E3%83%8F%E3%83%88%E3%83%A1%E6%8A%9C%E3%81%8D%E4%B8%B8%E3%81%84%E7%A9%B4%E3%81%82%E3%81%91/dp/B075M9F99Q/ref=pd_aw_sbs_60_1/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B075M9F99Q&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180",
       #   "https://www.amazon.co.jp/Amzbarley-%E7%A9%B4%E3%81%82%E3%81%91%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%99%E3%83%AB%E3%83%88%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%AC%E3%82%B6%E3%83%BC%E3%82%AF%E3%83%A9%E3%83%95%E3%83%88-%E3%83%AC%E3%82%B6%E3%83%BC%E3%83%91%E3%83%B3%E3%83%81/dp/B0827VZ61R/ref=pd_aw_sbs_60_2/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B0827VZ61R&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180"]]
-      scraping_details(pages)
+      scraping_results = scraping_details(pages)
     rescue => e
-      scraping_results << {asin: e}
+      p e
     end
 
     scraping_results
