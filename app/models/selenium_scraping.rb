@@ -115,6 +115,14 @@ class SeleniumScraping
         set_driver if @driver.nil?
         @driver.get(page)
 
+        asin_xpath = '/html/body/div[2]/div[2]/div[5]/div[19]/div/div/div[2]/div[1]/div[2]/div/div/table/tbody/tr[1]/td[2]'
+        @wait.until{ @driver.find_element(:xpath, asin_xpath).displayed? }
+        @page_info[pages_index][:asin] = @driver.find_element(:xpath, asin_xpath).text
+
+        product_name_xpath = '/html/body/div[2]/div[2]/div[5]/div[5]/div[4]/div[1]/div/h1/span'
+        @wait.until{ @driver.find_element(:xpath, product_name_xpath).displayed? }
+        @page_info[pages_index][:product_name] = @driver.find_element(:xpath, product_name_xpath).text
+
         shop_name_xpath = '//*[@id="sellerProfileTriggerId"]'
         @wait.until{ @driver.find_element(:xpath, shop_name_xpath).displayed? }
         shop_name = @driver.find_element(:xpath, shop_name_xpath)
@@ -199,18 +207,18 @@ class SeleniumScraping
   def scraping
     scraping_results = []
     pages = []
-    begin
-      pages = collect_page
-    rescue => e
-      scraping_results << {asin: e}
-    end
+    # begin
+    #   pages = collect_page
+    # rescue => e
+    #   scraping_results << {asin: e}
+    # end
 
     return scraping_results unless scraping_results.empty?
 
     begin
-      # pages = [nil,[
-      #   "https://www.amazon.co.jp/Bigtron-%E3%83%99%E3%83%AB%E3%83%88%E7%A9%B4%E3%81%82%E3%81%91%E6%A9%9F-12%E6%9C%AC%E3%82%BB%E3%83%83%E3%83%88-3mm-14mm-%E3%83%8F%E3%83%88%E3%83%A1%E6%8A%9C%E3%81%8D%E4%B8%B8%E3%81%84%E7%A9%B4%E3%81%82%E3%81%91/dp/B075M9F99Q/ref=pd_aw_sbs_60_1/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B075M9F99Q&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180",
-      #   "https://www.amazon.co.jp/Amzbarley-%E7%A9%B4%E3%81%82%E3%81%91%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%99%E3%83%AB%E3%83%88%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%AC%E3%82%B6%E3%83%BC%E3%82%AF%E3%83%A9%E3%83%95%E3%83%88-%E3%83%AC%E3%82%B6%E3%83%BC%E3%83%91%E3%83%B3%E3%83%81/dp/B0827VZ61R/ref=pd_aw_sbs_60_2/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B0827VZ61R&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180"]]
+      pages = [nil,[
+        "https://www.amazon.co.jp/Bigtron-%E3%83%99%E3%83%AB%E3%83%88%E7%A9%B4%E3%81%82%E3%81%91%E6%A9%9F-12%E6%9C%AC%E3%82%BB%E3%83%83%E3%83%88-3mm-14mm-%E3%83%8F%E3%83%88%E3%83%A1%E6%8A%9C%E3%81%8D%E4%B8%B8%E3%81%84%E7%A9%B4%E3%81%82%E3%81%91/dp/B075M9F99Q/ref=pd_aw_sbs_60_1/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B075M9F99Q&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180",
+        "https://www.amazon.co.jp/Amzbarley-%E7%A9%B4%E3%81%82%E3%81%91%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%99%E3%83%AB%E3%83%88%E3%83%9D%E3%83%B3%E3%83%81-%E3%83%AC%E3%82%B6%E3%83%BC%E3%82%AF%E3%83%A9%E3%83%95%E3%83%88-%E3%83%AC%E3%82%B6%E3%83%BC%E3%83%91%E3%83%B3%E3%83%81/dp/B0827VZ61R/ref=pd_aw_sbs_60_2/355-1178888-9759135?_encoding=UTF8&pd_rd_i=B0827VZ61R&pd_rd_r=c24eef9e-f177-458d-9cdf-a8436d2d67cb&pd_rd_w=3RKAG&pd_rd_wg=3wZ12&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=CASAHT7X6QPDP0E07180&psc=1&refRID=CASAHT7X6QPDP0E07180"]]
       scraping_results = scraping_details(pages)
     rescue => e
       p e
