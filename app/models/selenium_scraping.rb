@@ -138,7 +138,6 @@ class SeleniumScraping
         @wait.until{ @driver.find_element(:xpath, product_count_xpath).displayed? }
         product_count = @driver.find_element(:xpath, product_count_xpath).text.split(' ')[1].to_i
 
-        products[:totla] = product_count
         product_index = 1
         @next_page_href = nil
         @next_page_index = 1
@@ -152,10 +151,10 @@ class SeleniumScraping
               products[:over_price] = products[:over_price] += 1
             end
           rescue => e
-            # TODO やっぱりNEXTにしたい
             p e
             break
           end
+          products[:totla] = products[:totla] += 1
 
           prime_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[2]"
           if @driver.find_element(:xpath, prime_xpath).text.include?('までに')
@@ -164,41 +163,16 @@ class SeleniumScraping
           product_index += 1
 
           if i % 16 == 0
-            if @next_page_href.nil?
-              # TODO JS でクリックすればうまくいく？
-              @driver.execute_script("var element = document.getElementsByClassName('a-pagination')[0];
-                var rect = element.getBoundingClientRect();
-                var elemtop = rect.top + window.pageYOffset;
-                document.documentElement.scrollTop = elemtop;")
+            @driver.execute_script("var element = document.getElementsByClassName('a-pagination')[0];
+              var rect = element.getBoundingClientRect();
+              var elemtop = rect.top + window.pageYOffset;
+              document.documentElement.scrollTop = elemtop;")
 
-              sleep SLEEP_TIME
-              next_btn_xpath = '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]'
-              @wait.until{ @driver.find_element(:xpath, next_btn_xpath).displayed? }
-              @driver.find_element(:xpath, next_btn_xpath).click
+            @driver.execute_script('var element = document.querySelector("#search > div.s-desktop-width-max.s-desktop-content.sg-row > div.sg-col-20-of-24.sg-col-28-of-32.sg-col-16-of-20.sg-col.sg-col-32-of-36.sg-col-8-of-12.sg-col-12-of-16.sg-col-24-of-28 > div > span:nth-child(10) > div > div > span > div > div > ul > li.a-last > a");
+              element.click();')
 
-              @next_page_href = @driver.current_url
-              @next_page_index += 1
-              product_index = 1
-            else
-              @next_page_index += 1
-              uri = URI::parse(@next_page_href)
-              q_array = URI::decode_www_form(uri.query)
-              q_hash = Hash[q_array]
-              q_hash['page'] = @next_page_index
-
-              @next_page_href = 'https://' + uri.host + '/s?'
-              q_hash.each do |k,v|
-                @next_page_href = @next_page_href + k.to_s + '=' + v.to_s + '&'
-              end
-              @next_page_href = @next_page_href.chop
-
-              @driver.quit
-              @driver = nil
-              set_driver
-              @driver.get(@next_page_href)
-              sleep SLEEP_TIME
-              product_index = 1
-            end
+            sleep SLEEP_TIME
+            product_index = 1
           end
         end
         @page_info[pages_index][:products] = products
