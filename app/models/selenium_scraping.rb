@@ -10,7 +10,6 @@ class SeleniumScraping
   def set_driver
     options = Selenium::WebDriver::Chrome::Options.new
 
-    options.add_argument('headless')
     if Rails.env.production? || @headless_mode
       options.add_argument('headless') # ヘッドレスモードをonにするオプション
     end
