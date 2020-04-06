@@ -10,6 +10,7 @@ class SeleniumScraping
   def set_driver
     options = Selenium::WebDriver::Chrome::Options.new
 
+    options.add_argument('headless')
     if Rails.env.production? || @headless_mode
       options.add_argument('headless') # ヘッドレスモードをonにするオプション
     end
@@ -31,6 +32,7 @@ class SeleniumScraping
     # crome80
     @search_criteria = @xlsx_io.search_criteria
     scraping_results = scraping
+    [@search_criteria, scraping_results]
     binding.pry
   end
 
@@ -103,20 +105,21 @@ class SeleniumScraping
   end
 
   def scraping_details(pages)
-    page_info = []
+    @page_info = []
     pages[1].each_with_index do |page, pages_index|
       next if page.nil?
       next if page.include?('help/customer')
 
+      @page_info[pages_index] = {}
+      products = {totla: 0, over_price: 0, prime: 0}
       begin
         set_driver if @driver.nil?
         @driver.get(page)
 
-        page_info[pages_index] = {}
         shop_name_xpath = '//*[@id="sellerProfileTriggerId"]'
         @wait.until{ @driver.find_element(:xpath, shop_name_xpath).displayed? }
         shop_name = @driver.find_element(:xpath, shop_name_xpath)
-        page_info[pages_index][:shop_name] = shop_name[:text]
+        @page_info[pages_index][:shop_name] = shop_name[:text]
         shop_name.click
 
         sleep SLEEP_TIME
@@ -125,22 +128,23 @@ class SeleniumScraping
         @driver.find_element(:xpath, store_front_xpath).click
 
         store_front_url = @driver.current_url
-        page_info[pages_index][:store_front_url] = store_front_url
+        @page_info[pages_index][:store_front_url] = store_front_url
 
         uri = URI::parse(store_front_url)
         q_array = URI::decode_www_form(uri.query)
         q_hash = Hash[q_array]
-        page_info[pages_index][:cellar_id] = q_hash['me']
+        @page_info[pages_index][:cellar_id] = q_hash['me']
 
         product_count_xpath = '/html/body/div[1]/div[2]/span/div/span/h1/div/div[1]/div/div/span[1]'
         @wait.until{ @driver.find_element(:xpath, product_count_xpath).displayed? }
         product_count = @driver.find_element(:xpath, product_count_xpath).text.split(' ')[1].to_i
 
-        products = {totla: product_count, over_price: 0, prime: 0}
+        products[:totla] = product_count
         product_index = 1
         @next_page_href = nil
         @next_page_index = 1
         1.upto product_count do |i|
+          p i
           sleep SLEEP_TIME
           price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
           begin
@@ -149,6 +153,8 @@ class SeleniumScraping
               products[:over_price] = products[:over_price] += 1
             end
           rescue => e
+            # TODO やっぱりNEXTにしたい
+            p e
             break
           end
 
@@ -156,12 +162,11 @@ class SeleniumScraping
           if @driver.find_element(:xpath, prime_xpath).text.include?('までに')
             products[:prime] = products[:prime] += 1
           end
-
-          p products
           product_index += 1
 
           if i % 16 == 0
             if @next_page_href.nil?
+              # TODO JS でクリックすればうまくいく？
               @driver.execute_script("var element = document.getElementsByClassName('a-pagination')[0];
                 var rect = element.getBoundingClientRect();
                 var elemtop = rect.top + window.pageYOffset;
@@ -197,22 +202,25 @@ class SeleniumScraping
             end
           end
         end
-        page_info[pages_index][:products] = products
+        @page_info[pages_index][:products] = products
         @driver.quit
         @driver = nil
         sleep SLEEP_TIME
-      rescue
-        page_info[pages_index][:products] = products
+      rescue => e
+        p e
+        @page_info[pages_index][:products] = products
         @driver.quit
         @driver = nil
         sleep SLEEP_TIME
         next
       end
 
-      p page_info
+      p @page_info
+      # p pages_index
     end
+    p @page_info
 
-    return page_info
+    @page_info
   end
 
   def scraping
