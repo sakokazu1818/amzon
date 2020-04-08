@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 2020_04_05_164944) do
   end
 
   create_table "cellar_files", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.boolean "run", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
@@ -43,6 +44,7 @@ ActiveRecord::Schema.define(version: 2020_04_05_164944) do
     t.string "asin"
     t.string "product_url"
     t.string "price_conditions"
+    t.integer "cellar_file_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

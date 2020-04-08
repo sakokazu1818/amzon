@@ -47,13 +47,13 @@ class CellarFilesController < ApplicationController
   end
 
   def search
-    scraping = Scraping.new(@cellar_file)
-    FileUtils.touch(Rails.root + 'tmp/hogemge')
+    cellar_file = CellarFile.find(params[:id])
+    cellar_file.run = true
+    cellar_file.save!
 
-    begin
-      scraping.run
-    rescue
-    end
+    search_cellar = SearchCriterium.new(cellar_file)
+    search_cellar.run
+    render :json => {run: true}
   end
 
   def xlsx_download

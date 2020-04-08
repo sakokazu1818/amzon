@@ -6,7 +6,7 @@ class SearchCriterium < ApplicationRecord
     @origin_path = ActiveStorage::Blob.service.path_for(@cellar_file.excel.key)
     @working_files_path = @origin_path + '.xlsx'
     FileUtils.cp(@origin_path, @working_files_path)
-    @xlsx_io = ExcelxIo.new(@working_files_path, 0, @cellar_file)
+    @xlsx_io = ExcelxIo.new(@working_files_path, 0)
   end
 
   def run(mode: 'prod')
@@ -19,6 +19,9 @@ class SearchCriterium < ApplicationRecord
         scraping = SeleniumScraping.new(@xlsx_io, headless_mode: false)
         scraping.run
       end
+
+      @cellar_file.run = false
+      @cellar_file.save!
 
       finalize
     rescue

@@ -8,3 +8,24 @@
 //= require jquery_ujs
 //= require twitter/bootstrap
 //= require_tree .
+
+$(function () {
+  $('.search').on('click',function(){
+    $this = $(this);
+    $.ajax({
+      url: '/cellar_files/' + $this.data().id + '/search',
+      type: 'get',
+      dataType: 'json',
+      timespan:1000,
+    }).done(function(data) {
+      if (data.run == true) {
+        $this.remove();
+        $('.search-results').text('検索中')
+      }
+    }).fail(function(jqXHR, textStatus, errorThrown ) {
+      $('.search-results').text('通信エラー')
+    });
+
+    return false
+  });
+});
