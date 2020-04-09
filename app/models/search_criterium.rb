@@ -11,13 +11,18 @@ class SearchCriterium < ApplicationRecord
 
   def run(mode: 'prod')
     begin
-      # scraping = MechanizeScraping.new(@xlsx_io)
       if mode == 'test'
         scraping = SeleniumScraping.new(@xlsx_io, headless_mode: true)
         scraping.test_run
       else
         scraping = SeleniumScraping.new(@xlsx_io, headless_mode: false)
-        scraping.run
+        scraping_results = scraping.run
+      end
+
+      if scraping_results.nil?
+        binding.pry
+      else
+        binding.pry
       end
 
       @cellar_file.run = false

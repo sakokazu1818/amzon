@@ -28,11 +28,11 @@ class SeleniumScraping
   end
 
   def run
-    # crome80
     @search_criteria = @xlsx_io.search_criteria
     scraping_results = scraping
-    [@search_criteria, scraping_results]
-    p scraping_results
+    return scraping_results if scraping_results.nil?
+
+    return [@search_criteria, scraping_results]
   end
 
   def test_run
@@ -87,18 +87,19 @@ class SeleniumScraping
         try += 1
         scroll_for_target
         retry if try < 10
-
-        pages << e
+        p e
       end
     end
 
     @driver.quit
     @driver = nil
+
+    return pages if pages.nil?
     [pages_info, pages.compact]
   end
 
   def scraping_details(pages)
-    @page_info = []
+    @page_info = nil
     pages[1].each_with_index do |page, pages_index|
       next if page.nil?
       next if page.include?('help/customer')
@@ -193,7 +194,6 @@ class SeleniumScraping
       end
 
       p @page_info
-      # p pages_index
     end
     p @page_info
 
@@ -201,22 +201,9 @@ class SeleniumScraping
   end
 
   def scraping
-    scraping_results = []
-    pages = []
-    begin
-      pages = collect_page
-    rescue => e
-      scraping_results << {asin: e}
-    end
+    pages = collect_page
+    return scraping_results if pages.nil?
 
-    return scraping_results unless scraping_results.empty?
-
-    begin
-      scraping_results = scraping_details(pages)
-    rescue => e
-      p e
-    end
-
-    scraping_results
+    scraping_details(pages)
   end
 end
