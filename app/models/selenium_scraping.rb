@@ -32,7 +32,7 @@ class SeleniumScraping
     @search_criteria = @xlsx_io.search_criteria
     scraping_results = scraping
     [@search_criteria, scraping_results]
-    binding.pry
+    p scraping_results
   end
 
   def test_run
@@ -61,8 +61,6 @@ class SeleniumScraping
     page_max_xpath = '/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[1]/div[2]/span/span[1]/span[2]'
     @wait.until{ @driver.find_element(:xpath, page_max_xpath).displayed? }
     page_max = @driver.find_element(:xpath, page_max_xpath).text.to_i
-
-    binding.pry
 
     1.upto page_max do |page_index|
       ol_xpath = '/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol'
@@ -222,7 +220,6 @@ class SeleniumScraping
 
     begin
       scraping_results = scraping_details(pages)
-      binding.pry
     rescue => e
       p e
     end
