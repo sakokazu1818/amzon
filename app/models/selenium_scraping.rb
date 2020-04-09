@@ -4,7 +4,7 @@ class SeleniumScraping
     SLEEP_TIME = 3
   else
     WAIT_TIME = 10
-    SLEEP_TIME = 1
+    SLEEP_TIME = 2
   end
 
   def set_driver
@@ -54,16 +54,12 @@ class SeleniumScraping
     @driver.get(@search_criteria['商品ページURL'])
     scroll_for_target
 
-    target_area_xpath = '/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]'
-    @wait.until{ @driver.find_element(:xpath, target_area_xpath).displayed? }
-    target_area = @driver.find_element(:xpath, target_area_xpath)
-
-    page_max_xpath = '/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[1]/div[2]/span/span[1]/span[2]'
+    page_max_xpath = '/html/body/div[2]/div[2]/div[5]/div[15]/div/div/div/div/div[1]/div[2]/span/span[1]/span[2]'
     @wait.until{ @driver.find_element(:xpath, page_max_xpath).displayed? }
     page_max = @driver.find_element(:xpath, page_max_xpath).text.to_i
 
     1.upto page_max do |page_index|
-      ol_xpath = '/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol'
+      ol_xpath = '/html/body/div[2]/div[2]/div[5]/div[15]/div/div/div/div/div[2]/div/div[2]/div/ol'
       @wait.until{ @driver.find_element(:xpath, ol_xpath).displayed? }
       li = @driver.find_element(:xpath, ol_xpath).find_elements(css: 'li')
 
@@ -72,9 +68,6 @@ class SeleniumScraping
         li_index << "#{i}"
         sleep SLEEP_TIME
         begin
-          li_xpath = "/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol/li[#{i}]"
-          @wait.until{ @driver.find_element(:xpath, li_xpath).displayed? }
-
           href_xpath = "/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol/li[#{i}]/div/a"
           @wait.until{ @driver.find_element(:xpath, href_xpath).displayed? }
           pages << @driver.find_element(:xpath, href_xpath)[:href]
