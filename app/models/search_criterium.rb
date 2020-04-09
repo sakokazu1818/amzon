@@ -20,9 +20,9 @@ class SearchCriterium < ApplicationRecord
       end
 
       if scraping_results.nil?
-        binding.pry
+        @cellar_file.scraping_result = ScrapingResult.new(result: @xlsx_io.search_criteria.to_json)
       else
-        binding.pry
+        @cellar_file.scraping_result = ScrapingResult.new(result: scraping_results.to_json)
       end
 
       @cellar_file.run = false
