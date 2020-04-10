@@ -66,6 +66,9 @@ group :development, :test do
   gem 'pry-rails'
   gem 'pry-byebug'
   gem 'pry-doc'
+
+  gem 'capistrano-rails'
+  gem 'capistrano3-puma'
 end
 
 group :development do
