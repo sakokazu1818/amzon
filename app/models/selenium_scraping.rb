@@ -37,9 +37,8 @@ class SeleniumScraping
   end
 
   def test_run
-    logger.info(33333333333)
     @driver.get('https://www.google.co.jp/')
-    logger.info(@driver.page_source)
+    @driver.save_screenshot "#{Time.now.to_i}.png"
   end
 
   def scroll_for_target
