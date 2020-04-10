@@ -38,6 +38,7 @@ class SeleniumScraping
 
   def test_run
     @driver.get('https://www.google.co.jp/')
+    logger.info(@driver.page_source)
     p @driver.page_source
   end
 
