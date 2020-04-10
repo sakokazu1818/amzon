@@ -196,7 +196,6 @@ class SeleniumScraping
       end
 
       p @page_info
-      binding.pry
     end
     p @page_info
 
