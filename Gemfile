@@ -37,7 +37,7 @@ gem 'haml-rails'
 gem 'erb2haml'
 
 # less(CSS)対応（後述LESSを使う場合）
-gem 'less-rails', git: 'https://github.com/MustafaZain/less-rails'
+gem 'less-rails'
 # JavaScript のエンジンである v8 を Ruby から使えるようにする
 gem 'therubyracer'
 # JavaScriptコードを実行するためのエンジン
