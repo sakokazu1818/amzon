@@ -1,7 +1,7 @@
 class SeleniumScraping
   if Rails.env.production?
     WAIT_TIME = 20
-    SLEEP_TIME = 3
+    SLEEP_TIME = 5
   else
     WAIT_TIME = 10
     SLEEP_TIME = 2
@@ -10,10 +10,10 @@ class SeleniumScraping
   def set_driver
     options = Selenium::WebDriver::Chrome::Options.new
 
-    options.add_argument('headless') # ヘッドレスモードをonにするオプション
-    # if Rails.env.production? || @headless_mode
-    #   options.add_argument('headless') # ヘッドレスモードをonにするオプション
-    # end
+    # options.add_argument('headless') # ヘッドレスモードをonにするオプション
+    if Rails.env.production? || @headless_mode
+      options.add_argument('headless') # ヘッドレスモードをonにするオプション
+    end
 
     options.add_argument('--disable-gpu') # 暫定的に必要なフラグとのこと
     options.add_argument('window-size=1280,800')
@@ -54,6 +54,7 @@ class SeleniumScraping
     pages_info = []
     @driver.get(@search_criteria['商品ページURL'])
     scroll_for_target
+    sleep SLEEP_TIME
 
     page_max_xpath = '/html/body/div[2]/div[2]/div[5]/div[15]/div/div/div/div/div[1]/div[2]/span/span[1]/span[2]'
     @wait.until{ @driver.find_element(:xpath, page_max_xpath).displayed? }
@@ -69,7 +70,7 @@ class SeleniumScraping
         li_index << "#{i}"
         sleep SLEEP_TIME
         begin
-          href_xpath = "/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[2]/div/ol/li[#{i}]/div/a"
+          href_xpath = "/html/body/div[2]/div[2]/div[5]/div[15]/div/div/div/div/div[2]/div/div[2]/div/ol/li[#{i}]/div/a"
           @wait.until{ @driver.find_element(:xpath, href_xpath).displayed? }
           pages << @driver.find_element(:xpath, href_xpath)[:href]
         rescue => e
@@ -81,7 +82,7 @@ class SeleniumScraping
       break if page_index > page_max - 1
 
       begin
-        next_btn_xpath = '/html/body/div[2]/div[2]/div[5]/div[18]/div/div/div/div/div/div[2]/div/div[3]/a'
+        next_btn_xpath = '/html/body/div[2]/div[2]/div[5]/div[15]/div/div/div/div/div[2]/div/div[3]/a'
         @wait.until{ @driver.find_element(:xpath, next_btn_xpath).displayed? }
         next_btn = @driver.find_element(:xpath, next_btn_xpath).click
       rescue => e
@@ -195,6 +196,7 @@ class SeleniumScraping
       end
 
       p @page_info
+      binding.pry
     end
     p @page_info
 
@@ -206,12 +208,16 @@ class SeleniumScraping
       pages = collect_page
       return pages if pages.nil?
 
-      scraping_details(['', ['https://www.amazon.co.jp/Bigtron-%E3%83%99%E3%83%AB%E3%83%88%E7%A9%B4%E3%81%82%E3%81%91%E6%A9%9F-12%E6%9C%AC%E3%82%BB%E3%83%83%E3%83%88-3mm-14mm-%E3%83%8F%E3%83%88%E3%83%A1%E6%8A%9C%E3%81%8D%E4%B8%B8%E3%81%84%E7%A9%B4%E3%81%82%E3%81%91/dp/B075M9F99Q/ref=pd_aw_sbs_60_1/355-1275993-5102726?_encoding=UTF8&pd_rd_i=B075M9F99Q&pd_rd_r=08c6bc7d-9777-4f0e-ba37-d6a453ebc7d8&pd_rd_w=CIriZ&pd_rd_wg=FFY1r&pf_rd_p=1893a417-ba87-4709-ab4f-0dece788c310&pf_rd_r=Y6VJJRJM1E5E7P58W6DX&psc=1&refRID=Y6VJJRJM1E5E7P58W6DX']])
       scraping_details(pages)
 
-      # [{:asin=>"B075M9F99Q", :product_name=>"Bigtron 革穴パンチ ベルト穴あけ機 中空 12本セット 3mm-14mm ハトメ抜き丸い穴あけ レザーツール", :shop_name=>"Big Tron", :store_front_url=>"https://www.amazon.co.jp/s?marketplaceID=A1VC38T7YXB528&me=A3PJWOLFXYB2GU&merchant=A3PJWOLFXYB2GU", :cellar_id=>"A3PJWOLFXYB2GU", :products=>{:totla=>121, :over_price=>72, :prime=>20}}]
+      # [{:asin=>"B075M9F99Q",
+      #   :product_name=>"Bigtron 革穴パンチ ベルト穴あけ機 中空 12本セット 3mm-14mm ハトメ抜き丸い穴あけ レザーツール",
+      #   :shop_name=>"Big Tron",
+      #   :store_front_url=>"https://www.amazon.co.jp/s?marketplaceID=A1VC38T7YXB528&me=A3PJWOLFXYB2GU&merchant=A3PJWOLFXYB2GU",
+      #   :cellar_id=>"A3PJWOLFXYB2GU",
+      #   :products=>{:totla=>122, :over_price=>74, :prime=>19}}]
     rescue => e
-      binding.pry
+      p e
       return nil
     end
   end

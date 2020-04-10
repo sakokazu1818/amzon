@@ -14,7 +14,7 @@ wb.styles do |style|
       next unless cellar_arr.has_key?('shop_name')
       over_price_ritu = cellar_arr['products']['over_price'].to_i.zero? ? 0 : cellar_arr['products']['over_price'].to_i / cellar_arr['products']['totla'].to_f
       prime_ritu = cellar_arr['products']['prime'].to_i.zero? ? 0 : cellar_arr['products']['prime'].to_i / cellar_arr['products']['totla'].to_f
-      row = [cellar_index, '', '', cellar_arr['shop_name'], cellar_arr['cellar_id'],
+      row = [cellar_index, cellar_arr['asin'], cellar_arr['product_name'], cellar_arr['shop_name'], cellar_arr['cellar_id'],
         cellar_arr['store_front_url'], cellar_arr['products']['totla'],
         cellar_arr['products']['over_price'],
         (over_price_ritu.round(2) * 100).to_i,

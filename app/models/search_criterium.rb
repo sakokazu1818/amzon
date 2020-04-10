@@ -22,29 +22,16 @@ class SearchCriterium < ApplicationRecord
       if scraping_results.nil?
         @cellar_file.scraping_result = ScrapingResult.new(result: @xlsx_io.search_criteria.to_json)
       else
+        unless @cellar_file.scraping_result.nil?
+          @cellar_file.scraping_result.delete
+        end
         @cellar_file.scraping_result = ScrapingResult.new(result: scraping_results.to_json)
       end
 
       @cellar_file.run = false
       @cellar_file.save!
-
-      finalize
-    rescue
-      delete_working_files
+    rescue => e
+      p e
     end
-  end
-
-  def finalize
-    @cellar_file.excel.purge
-    @cellar_file.excel.attach(io: File.open(@working_files_path), filename: @cellar_file.name)
-
-    delete_working_files
-    working_files_path_arr = @working_files_path.split('/')
-    working_files_path_arr.pop(2)
-    FileUtils.rm_r(working_files_path_arr.join('/'))
-  end
-
-  def delete_working_files
-    FileUtils.rm(@working_files_path)
   end
 end
