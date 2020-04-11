@@ -99,6 +99,8 @@ class SeleniumScraping
     @driver = nil
 
     return pages if pages.nil?
+
+    Rails.application.config.special_logger.debug pages
     [pages_info, pages.compact]
   end
 
@@ -200,6 +202,7 @@ class SeleniumScraping
       end
 
       p @page_info
+      Rails.application.config.special_logger.debug @page_info
     end
     p @page_info
 
