@@ -209,21 +209,17 @@ class SeleniumScraping
   end
 
   def scraping
+    sd = nil
     begin
       pages = collect_page
       return pages if pages.nil?
 
-      scraping_details(pages)
-
-      # [{:asin=>"B075M9F99Q",
-      #   :product_name=>"Bigtron 革穴パンチ ベルト穴あけ機 中空 12本セット 3mm-14mm ハトメ抜き丸い穴あけ レザーツール",
-      #   :shop_name=>"Big Tron",
-      #   :store_front_url=>"https://www.amazon.co.jp/s?marketplaceID=A1VC38T7YXB528&me=A3PJWOLFXYB2GU&merchant=A3PJWOLFXYB2GU",
-      #   :cellar_id=>"A3PJWOLFXYB2GU",
-      #   :products=>{:totla=>122, :over_price=>74, :prime=>19}}]
+      sd = scraping_details(pages)
     rescue => e
       p e
-      return nil
+      sd = nil
     end
+
+    return sd
   end
 end
