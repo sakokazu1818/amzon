@@ -29,6 +29,7 @@ class SeleniumScraping
   end
 
   def run
+    Rails.application.config.special_logger.debug 'start run'
     @search_criteria = @xlsx_io.search_criteria
     scraping_results = scraping
     return scraping_results if scraping_results.nil?
@@ -50,6 +51,7 @@ class SeleniumScraping
   end
 
   def collect_page
+    Rails.application.config.special_logger.debug 'start collect_page'
     pages = []
     pages_info = []
     @driver.get(@search_criteria['商品ページURL'])
@@ -105,6 +107,7 @@ class SeleniumScraping
   end
 
   def scraping_details(pages)
+    Rails.application.config.special_logger.debug 'start scraping_details'
     @page_info = []
     pages[1].each_with_index do |page, pages_index|
       next if page.nil?

@@ -15,6 +15,7 @@ class SearchCriterium < ApplicationRecord
         scraping = SeleniumScraping.new(@xlsx_io, headless_mode: true)
         scraping.test_run
       else
+        Rails.application.config.special_logger.debug 'start SeleniumScraping'
         scraping = SeleniumScraping.new(@xlsx_io, headless_mode: false)
         scraping_results = scraping.run
       end
@@ -33,6 +34,7 @@ class SearchCriterium < ApplicationRecord
       @cellar_file.scraping_result.save!
     rescue => e
       Rails.application.config.special_logger.debug e
+      @cellar_file.run = false
       p e
     end
   end
