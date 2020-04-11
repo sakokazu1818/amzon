@@ -1,5 +1,5 @@
 class CellarFilesController < ApplicationController
-  before_action :set_cellar_file, only: [:show, :edit, :update, :destroy, :search]
+  before_action :set_cellar_file, only: [:show, :edit, :update, :destroy, :search, :download]
 
   # GET /cellar_files
   # GET /cellar_files.json
@@ -11,18 +11,13 @@ class CellarFilesController < ApplicationController
   def new
     @cellar_file = CellarFile.new
     @cellar_file.name = Time.current.strftime('%Y-%m-%d-%H-%M-%S.xlsx')
-
-    if CellarFile.all.length > 4
-      d_c_f = CellarFile.all.last
-      d_c_f.excel.purge if @cellar_file.excel.attached?
-      d_c_f.destroy
-    end
   end
 
   # POST /cellar_files
   # POST /cellar_files.json
   def create
     @cellar_file = CellarFile.new(cellar_file_params)
+    @cellar_file.name = params[:cellar_file]['excel'].original_filename
 
     respond_to do |format|
       if @cellar_file.save
@@ -73,6 +68,11 @@ class CellarFilesController < ApplicationController
         response.headers['Content-Disposition'] = "attachment; filename=#{Time.current}.xlsx"
       }
     end
+  end
+
+  def download
+    data = @cellar_file.excel.download
+    send_data(data, type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename: "#{@cellar_file.name}.xlsx")
   end
 
   private

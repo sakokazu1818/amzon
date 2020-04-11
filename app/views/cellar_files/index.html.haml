@@ -12,8 +12,8 @@
   %tbody
     - @cellar_files.each do |cellar_file|
       %tr
-        %td= link_to cellar_file.id, cellar_file_path(cellar_file)
-        %td= cellar_file.name
+        %td= cellar_file.id
+        %td= link_to cellar_file.name, download_cellar_file_path(cellar_file)
         %td=l cellar_file.created_at
         - if !(cellar_file.scraping_result.nil?) && !(cellar_file.run)
           %td.search-results= link_to '検索結果', xlsx_download_cellar_file_path(cellar_file, format: :xlsx), data: {turbolinks: false}
