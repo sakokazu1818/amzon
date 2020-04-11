@@ -32,9 +32,12 @@ class SearchCriterium < ApplicationRecord
       @cellar_file.run = false
       @cellar_file.save!
       @cellar_file.scraping_result.save!
+
+      p "-------- #{Time.current} search end #{@cellar_file}-------------------"
     rescue => e
       @cellar_file.run = false
       p e
+      p "-------- #{Time.current} search end #{@cellar_file}-------------------"
     end
   end
 end

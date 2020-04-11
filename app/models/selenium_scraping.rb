@@ -154,7 +154,6 @@ class SeleniumScraping
         @next_page_href = nil
         @next_page_index = 1
         1.upto product_count do |i|
-          p i
           sleep SLEEP_TIME
           price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
           begin
@@ -200,7 +199,6 @@ class SeleniumScraping
         next
       end
 
-      p @page_info
     end
     p @page_info
 
