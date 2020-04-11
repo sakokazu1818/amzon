@@ -52,6 +52,8 @@ class CellarFilesController < ApplicationController
     cellar_file.save!
 
     search_cellar = SearchCriterium.new(cellar_file)
+    search_cellar.run
+
     render :json => {run: true}
   end
 
