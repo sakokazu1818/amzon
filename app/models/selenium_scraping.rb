@@ -1,6 +1,6 @@
 class SeleniumScraping
   if Rails.env.production?
-    WAIT_TIME = 20
+    WAIT_TIME = 10
     SLEEP_TIME = 5
   else
     WAIT_TIME = 10
