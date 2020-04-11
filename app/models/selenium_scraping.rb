@@ -74,6 +74,7 @@ class SeleniumScraping
           @wait.until{ @driver.find_element(:xpath, href_xpath).displayed? }
           pages << @driver.find_element(:xpath, href_xpath)[:href]
         rescue => e
+          Rails.application.config.special_logger.debug e
           pages << nil
         end
       end
@@ -89,6 +90,7 @@ class SeleniumScraping
         try += 1
         scroll_for_target
         retry if try < 10
+        Rails.application.config.special_logger.debug e
         p e
       end
     end
@@ -158,6 +160,7 @@ class SeleniumScraping
               products[:over_price] = products[:over_price] += 1
             end
           rescue => e
+            Rails.application.config.special_logger.debug e
             p e
             break
           end
@@ -187,6 +190,7 @@ class SeleniumScraping
         @driver = nil
         sleep SLEEP_TIME
       rescue => e
+        Rails.application.config.special_logger.debug
         p e
         @page_info[pages_index][:products] = products
         @driver.quit
@@ -216,6 +220,7 @@ class SeleniumScraping
       #   :cellar_id=>"A3PJWOLFXYB2GU",
       #   :products=>{:totla=>122, :over_price=>74, :prime=>19}}]
     rescue => e
+      Rails.application.config.special_logger.debug e
       p e
       return nil
     end

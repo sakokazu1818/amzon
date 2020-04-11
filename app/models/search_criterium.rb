@@ -31,6 +31,7 @@ class SearchCriterium < ApplicationRecord
       @cellar_file.run = false
       @cellar_file.save!
     rescue => e
+      Rails.application.config.special_logger.debug e
       p e
     end
   end
