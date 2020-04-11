@@ -205,6 +205,7 @@ class SeleniumScraping
     p @page_info
 
     return nil if @page_info.empty?
+    return @page_info
   end
 
   def scraping
