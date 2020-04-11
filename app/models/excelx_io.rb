@@ -9,6 +9,7 @@ class ExcelxIo
     @roo_xlsx.each_row_streaming(offset: 1, max_rows: 2) do |row|
       @search_criteria[row[0].value] = row[1].value
     end
+    @search_criteria["商品ページURL"] = 'https://www.amazon.co.jp/dp/' + @search_criteria["ASIN"]
 
     @search_criteria
   end

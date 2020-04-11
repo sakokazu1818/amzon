@@ -10,23 +10,30 @@
 //= require_tree .
 
 $(function () {
-  $('.search').on('click',function(){
-    var $this = $(this);
-    var $search_results = $this.parent().prev();
+  var flg = true;
 
-    $.ajax({
-      url: '/cellar_files/' + $this.data().id + '/search',
-      type: 'get',
-      dataType: 'json',
-      timespan:1000,
-    }).done(function(data) {
-      if (data.run == true) {
-        $search_results.text('検索中');
-        $this.remove();
-      }
-    }).fail(function(jqXHR, textStatus, errorThrown ) {
-      $search_results.text('通信エラー')
-    });
+  $('.search').on('click',function(){
+    if (flg) {
+      flg = false;
+
+      var $this = $(this);
+      var $search_results = $this.parent().prev();
+      flg = true;
+
+      $.ajax({
+        url: '/cellar_files/' + $this.data().id + '/search',
+        type: 'get',
+        dataType: 'json',
+        timespan:1000,
+      }).done(function(data) {
+        if (data.run == true) {
+          $search_results.text('検索中');
+          $this.remove();
+        }
+      }).fail(function(jqXHR, textStatus, errorThrown ) {
+        $search_results.text('通信エラー')
+      });
+    }
 
     return false
   });
