@@ -27,8 +27,9 @@ $(function () {
         timespan:1000,
       }).done(function(data) {
         if (data.run == true) {
-          $search_results.text('検索中');
+          $this.next().remove();
           $this.remove();
+          $search_results.text('検索中');
         }
       }).fail(function(jqXHR, textStatus, errorThrown ) {
         $search_results.text('通信エラー')
