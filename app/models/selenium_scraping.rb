@@ -32,7 +32,6 @@ class SeleniumScraping
     p 'start SeleniumScraping run'
     @search_criteria = @xlsx_io.search_criteria
     scraping_results = scraping
-    return scraping_results if scraping_results.nil?
 
     return [@search_criteria, scraping_results]
   end
