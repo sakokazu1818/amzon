@@ -29,7 +29,7 @@ class SeleniumScraping
   end
 
   def run
-    Rails.application.config.special_logger.debug 'start run'
+    p 'start SeleniumScraping run'
     @search_criteria = @xlsx_io.search_criteria
     scraping_results = scraping
     return scraping_results if scraping_results.nil?
@@ -51,7 +51,7 @@ class SeleniumScraping
   end
 
   def collect_page
-    Rails.application.config.special_logger.debug 'start collect_page'
+    p 'start collect_page'
     pages = []
     pages_info = []
     @driver.get(@search_criteria['商品ページURL'])
@@ -76,7 +76,7 @@ class SeleniumScraping
           @wait.until{ @driver.find_element(:xpath, href_xpath).displayed? }
           pages << @driver.find_element(:xpath, href_xpath)[:href]
         rescue => e
-          Rails.application.config.special_logger.debug e
+          p e
           pages << nil
         end
       end
@@ -92,7 +92,6 @@ class SeleniumScraping
         try += 1
         scroll_for_target
         retry if try < 10
-        Rails.application.config.special_logger.debug e
         p e
       end
     end
@@ -101,13 +100,13 @@ class SeleniumScraping
     @driver = nil
 
     return pages if pages.nil?
+    p [pages_info, pages.compact]
 
-    Rails.application.config.special_logger.debug pages
     [pages_info, pages.compact]
   end
 
   def scraping_details(pages)
-    Rails.application.config.special_logger.debug 'start scraping_details'
+    p 'scraping_details'
     @page_info = []
     pages[1].each_with_index do |page, pages_index|
       next if page.nil?
@@ -165,7 +164,6 @@ class SeleniumScraping
               products[:over_price] = products[:over_price] += 1
             end
           rescue => e
-            Rails.application.config.special_logger.debug e
             p e
             break
           end
@@ -195,7 +193,6 @@ class SeleniumScraping
         @driver = nil
         sleep SLEEP_TIME
       rescue => e
-        Rails.application.config.special_logger.debug
         p e
         @page_info[pages_index][:products] = products
         @driver.quit
@@ -205,7 +202,6 @@ class SeleniumScraping
       end
 
       p @page_info
-      Rails.application.config.special_logger.debug @page_info
     end
     p @page_info
 
@@ -226,7 +222,6 @@ class SeleniumScraping
       #   :cellar_id=>"A3PJWOLFXYB2GU",
       #   :products=>{:totla=>122, :over_price=>74, :prime=>19}}]
     rescue => e
-      Rails.application.config.special_logger.debug e
       p e
       return nil
     end
