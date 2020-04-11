@@ -11,7 +11,9 @@
 
 $(function () {
   $('.search').on('click',function(){
-    $this = $(this);
+    var $this = $(this);
+    var $search_results = $this.parent().prev();
+
     $.ajax({
       url: '/cellar_files/' + $this.data().id + '/search',
       type: 'get',
@@ -19,11 +21,11 @@ $(function () {
       timespan:1000,
     }).done(function(data) {
       if (data.run == true) {
+        $search_results.text('検索中');
         $this.remove();
-        $('.search-results').text('検索中')
       }
     }).fail(function(jqXHR, textStatus, errorThrown ) {
-      $('.search-results').text('通信エラー')
+      $search_results.text('通信エラー')
     });
 
     return false

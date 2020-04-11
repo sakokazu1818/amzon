@@ -72,7 +72,7 @@ class CellarFilesController < ApplicationController
 
   def download
     data = @cellar_file.excel.download
-    send_data(data, type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename: "#{@cellar_file.name}.xlsx")
+    send_data(data, type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', filename: @cellar_file.name)
   end
 
   private

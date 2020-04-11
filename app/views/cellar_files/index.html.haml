@@ -24,7 +24,9 @@
         - else
           %td.search-results= ''
         %td
-          %span{class: 'btn btn-default btn-xs search', data: {id: "#{cellar_file.id}"}}= '検索' if cellar_file.search_criterium.nil?
-          = link_to t('.destroy', :default => t("helpers.links.destroy")), cellar_file_path(cellar_file), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
+          - if !cellar_file.run? && cellar_file.scraping_result.nil?
+            %span{class: 'btn btn-default btn-xs search', data: {id: "#{cellar_file.id}"}}= '検索'
+          - unless cellar_file.run?
+            = link_to t('.destroy', :default => t("helpers.links.destroy")), cellar_file_path(cellar_file), :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger'
 
 = link_to t('.new', :default => t("helpers.links.new")), new_cellar_file_path, :class => 'btn btn-primary'
