@@ -199,11 +199,14 @@ class SeleniumScraping
             @driver.execute_script("window.scroll(0, 4000);")
             sleep SLEEP_TIME
 
-            next_btn_xpath = '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]'
-            @wait.until{ @driver.find_element(:xpath, next_btn_xpath).displayed? }
-            @driver.find_element(:xpath, next_btn_xpath).click
-
-            product_index = 1
+            begin
+              next_btn_xpath = '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]'
+              @wait.until{ @driver.find_element(:xpath, next_btn_xpath).displayed? }
+              @driver.find_element(:xpath, next_btn_xpath).click
+              product_index = 1
+            rescue
+              break
+            end
           end
 
           @pageindex += 1
