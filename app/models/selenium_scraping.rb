@@ -155,7 +155,6 @@ class SeleniumScraping
         @next_page_index = 1
         @pageindex = 1
         loop do
-          binding.pry
           price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
           begin
             sleep SLEEP_TIME
