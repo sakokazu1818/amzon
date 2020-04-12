@@ -198,7 +198,10 @@ class SeleniumScraping
           if @pageindex % 16 == 0
             @driver.execute_script("window.scroll(0, 4000);")
             sleep SLEEP_TIME
-            @driver.find_element(:xpath, '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]').click
+
+            next_btn_xpath = '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]'
+            @wait.until{ @driver.find_element(:xpath, next_btn_xpath).displayed? }
+            @driver.find_element(:xpath, next_btn_xpath).click
 
             product_index = 1
           end
@@ -213,6 +216,7 @@ class SeleniumScraping
       rescue => e
         p e
         @page_info[pages_index][:products] = products
+        p @page_info[pages_index]
         @driver.quit
         @driver = nil
         sleep SLEEP_TIME
