@@ -42,8 +42,8 @@ class CellarFilesController < ApplicationController
   end
 
   def search
-    p "-------- #{Time.current} search start #{cellar_file}-------------------"
     cellar_file = CellarFile.find(params[:id])
+    p "-------- #{Time.current} search start #{cellar_file}-------------------"
     cellar_file.run = true
     if cellar_file.save
       Thread.start do
