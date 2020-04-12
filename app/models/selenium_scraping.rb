@@ -196,14 +196,9 @@ class SeleniumScraping
           product_index += 1
 
           if @pageindex % 16 == 0
-            @driver.execute_script("var element = document.querySelector('#search > div.s-desktop-width-max.s-desktop-content.s-opposite-dir.sg-row > div.sg-col-20-of-24.s-matching-dir.sg-col-28-of-32.sg-col-16-of-20.sg-col.sg-col-32-of-36.sg-col-8-of-12.sg-col-12-of-16.sg-col-24-of-28 > div > span:nth-child(10) > div > div > span > div > div > ul > li.a-last');
-              var rect = element.getBoundingClientRect();
-              var elemtop = rect.top + window.pageYOffset;
-              document.documentElement.scrollTop = elemtop;")
+            @driver.execute_script("window.scroll(0, 4000);")
             sleep SLEEP_TIME
-
-            @driver.execute_script('var element = document.querySelector("#search > div.s-desktop-width-max.s-desktop-content.s-opposite-dir.sg-row > div.sg-col-20-of-24.s-matching-dir.sg-col-28-of-32.sg-col-16-of-20.sg-col.sg-col-32-of-36.sg-col-8-of-12.sg-col-12-of-16.sg-col-24-of-28 > div > span:nth-child(10) > div > div > span > div > div > ul > li.a-last");
-              element.click();')
+            @driver.find_element(:xpath, '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]').click
 
             product_index = 1
           end
