@@ -153,10 +153,12 @@ class SeleniumScraping
         product_index = 1
         @next_page_href = nil
         @next_page_index = 1
-        1.upto product_count do |i|
-          sleep SLEEP_TIME
+        @pageindex = 1
+        loop do
+          binding.pry
           price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
           begin
+            sleep SLEEP_TIME
             @wait.until{ @driver.find_element(:xpath, price_xpath).displayed? }
             if @driver.find_element(:xpath, price_xpath).text.split("\n").first.delete('￥').delete(',').to_i > @search_criteria['価格条件']
               products[:over_price] = products[:over_price] += 1
@@ -167,13 +169,15 @@ class SeleniumScraping
           end
           products[:totla] = products[:totla] += 1
 
-          prime_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[2]"
-          if @driver.find_element(:xpath, prime_xpath).text.include?('までに')
+          prime_xpath = "/html/body/div[1]/div[2]/div[1]/div[1]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[2]/div/div[1]/span[1]/span[1]/i"
+          begin
+            @wait.until{ @driver.find_element(:xpath, price_xpath).displayed? }
             products[:prime] = products[:prime] += 1
+          rescue
           end
           product_index += 1
 
-          if i % 16 == 0
+          if @pageindex % 16 == 0
             @driver.execute_script("var element = document.getElementsByClassName('a-pagination')[0];
               var rect = element.getBoundingClientRect();
               var elemtop = rect.top + window.pageYOffset;
