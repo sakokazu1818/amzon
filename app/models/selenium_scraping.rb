@@ -124,8 +124,19 @@ class SeleniumScraping
         @page_info[pages_index][:asin] = q_hash['pd_rd_i']
 
         product_name_xpath = '/html/body/div[2]/div[2]/div[5]/div[5]/div[4]/div[1]/div/h1/span'
-        @wait.until{ @driver.find_element(:xpath, product_name_xpath).displayed? }
-        @page_info[pages_index][:product_name] = @driver.find_element(:xpath, product_name_xpath).text
+        begin
+          @wait.until{ @driver.find_element(:xpath, product_name_xpath).displayed? }
+          @page_info[pages_index][:product_name] = @driver.find_element(:xpath, product_name_xpath).text
+        rescue
+          begin
+            product_name_xpath = '/html/body/div[2]/div[2]/div[5]/div[5]/div[2]/div[1]/div/h1/span'
+            @wait.until{ @driver.find_element(:xpath, product_name_xpath).displayed? }
+            @page_info[pages_index][:product_name] = @driver.find_element(:xpath, product_name_xpath).text
+          rescue
+          end
+        end
+
+        @page_info[pages_index][:product_name] = '' if @page_info[pages_index][:product_name].nil?
 
         shop_name_xpath = '//*[@id="sellerProfileTriggerId"]'
         @wait.until{ @driver.find_element(:xpath, shop_name_xpath).displayed? }
@@ -155,16 +166,24 @@ class SeleniumScraping
         @next_page_index = 1
         @pageindex = 1
         loop do
-          price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
           begin
             sleep SLEEP_TIME
+            price_xpath = "/html/body/div[1]/div[2]/div[1]/div[2]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
             @wait.until{ @driver.find_element(:xpath, price_xpath).displayed? }
             if @driver.find_element(:xpath, price_xpath).text.split("\n").first.delete('￥').delete(',').to_i > @search_criteria['価格条件']
               products[:over_price] = products[:over_price] += 1
             end
           rescue => e
-            p e
-            break
+            begin
+              price_xpath = "/html/body/div[1]/div[2]/div[1]/div[1]/div/span[4]/div[1]/div[#{product_index}]/div/span/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div[1]"
+              @wait.until{ @driver.find_element(:xpath, price_xpath).displayed? }
+              if @driver.find_element(:xpath, price_xpath).text.split("\n").first.delete('￥').delete(',').to_i > @search_criteria['価格条件']
+                products[:over_price] = products[:over_price] += 1
+              end
+            rescue => ee
+              p ee
+              break
+            end
           end
           products[:totla] = products[:totla] += 1
 
@@ -177,12 +196,12 @@ class SeleniumScraping
           product_index += 1
 
           if @pageindex % 16 == 0
-            @driver.execute_script("var element = document.getElementsByClassName('a-pagination')[0];
+            @driver.execute_script("var element = document.querySelector('#search > div.s-desktop-width-max.s-desktop-content.sg-row > div.sg-col-20-of-24.sg-col-28-of-32.sg-col-16-of-20.sg-col.sg-col-32-of-36.sg-col-8-of-12.sg-col-12-of-16.sg-col-24-of-28 > div > span:nth-child(10) > div > div > span > div > div > ul > li.a-last');
               var rect = element.getBoundingClientRect();
               var elemtop = rect.top + window.pageYOffset;
               document.documentElement.scrollTop = elemtop;")
 
-            @driver.execute_script('var element = document.querySelector("#search > div.s-desktop-width-max.s-desktop-content.sg-row > div.sg-col-20-of-24.sg-col-28-of-32.sg-col-16-of-20.sg-col.sg-col-32-of-36.sg-col-8-of-12.sg-col-12-of-16.sg-col-24-of-28 > div > span:nth-child(10) > div > div > span > div > div > ul > li.a-last > a");
+            @driver.execute_script('var element = document.querySelector("#search > div.s-desktop-width-max.s-desktop-content.sg-row > div.sg-col-20-of-24.sg-col-28-of-32.sg-col-16-of-20.sg-col.sg-col-32-of-36.sg-col-8-of-12.sg-col-12-of-16.sg-col-24-of-28 > div > span:nth-child(10) > div > div > span > div > div > ul > li.a-last");
               element.click();')
 
             sleep SLEEP_TIME
@@ -190,6 +209,7 @@ class SeleniumScraping
           end
         end
         @page_info[pages_index][:products] = products
+        p @page_info[pages_index]
         @driver.quit
         @driver = nil
         sleep SLEEP_TIME
